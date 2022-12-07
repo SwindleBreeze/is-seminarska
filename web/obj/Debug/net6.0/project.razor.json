@@ -16328,6 +16328,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Views\\Region\\Delete.cshtml",
+      "TargetPath": "Views\\Region\\Delete.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Areas\\Identity\\Pages\\Account\\Logout.cshtml",
       "TargetPath": "Areas\\Identity\\Pages\\Account\\Logout.cshtml",
       "FileKind": "mvc"
@@ -16343,6 +16348,11 @@
       "FileKind": "mvc"
     },
     {
+      "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Views\\Region\\Index.cshtml",
+      "TargetPath": "Views\\Region\\Index.cshtml",
+      "FileKind": "mvc"
+    },
+    {
       "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Views\\Profile\\Create.cshtml",
       "TargetPath": "Views\\Profile\\Create.cshtml",
       "FileKind": "mvc"
@@ -16350,6 +16360,11 @@
     {
       "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Areas\\Identity\\Pages\\_ValidationScriptsPartial.cshtml",
       "TargetPath": "Areas\\Identity\\Pages\\_ValidationScriptsPartial.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Views\\Region\\Edit.cshtml",
+      "TargetPath": "Views\\Region\\Edit.cshtml",
       "FileKind": "mvc"
     },
     {
@@ -16395,6 +16410,16 @@
     {
       "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Views\\Home\\Privacy.cshtml",
       "TargetPath": "Views\\Home\\Privacy.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Views\\Region\\Create.cshtml",
+      "TargetPath": "Views\\Region\\Create.cshtml",
+      "FileKind": "mvc"
+    },
+    {
+      "FilePath": "c:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\Views\\Region\\Details.cshtml",
+      "TargetPath": "Views\\Region\\Details.cshtml",
       "FileKind": "mvc"
     },
     {

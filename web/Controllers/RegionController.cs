@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -12,92 +11,89 @@ using web.Models;
 
 namespace web.Controllers
 {
-    public class ProfileController : Controller
+    public class RegionController : Controller
     {
         private readonly sloveniatrips _context;
 
-        public ProfileController(sloveniatrips context)
+        public RegionController(sloveniatrips context)
         {
             _context = context;
         }
 
-        // GET: Profile
-        [Authorize(Roles = "Administrator")]
+        // GET: Region
         public async Task<IActionResult> Index()
         {
-            var sloveniatrips = _context.Profiles.Include(p => p.region);
-            return View(await sloveniatrips.ToListAsync());
+              return _context.Regions != null ? 
+                          View(await _context.Regions.ToListAsync()) :
+                          Problem("Entity set 'sloveniatrips.Regions'  is null.");
         }
-        [Authorize(Roles = "Administrator")]
-        // GET: Profile/Details/5
+
+        // GET: Region/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Profiles == null)
+            if (id == null || _context.Regions == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profiles
-                .Include(p => p.region)
+            var region = await _context.Regions
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (profile == null)
+            if (region == null)
             {
                 return NotFound();
             }
 
-            return View(profile);
+            return View(region);
         }
+
+        // GET: Region/Create
         [Authorize(Roles = "Administrator")]
-        // GET: Profile/Create
         public IActionResult Create()
         {
-            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID");
             return View();
         }
 
-        // POST: Profile/Create
+        // POST: Region/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,username,password,email,regionID,registrationDate,DoB")] Profile profile)
+        public async Task<IActionResult> Create([Bind("ID,name")] Region region)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(profile);
+                _context.Add(region);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", profile.regionID);
-            return View(profile);
+            return View(region);
         }
 
-        // GET: Profile/Edit/5
+        // GET: Region/Edit/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Profiles == null)
+            if (id == null || _context.Regions == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profiles.FindAsync(id);
-            if (profile == null)
+            var region = await _context.Regions.FindAsync(id);
+            if (region == null)
             {
                 return NotFound();
             }
-            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", profile.regionID);
-            return View(profile);
+            return View(region);
         }
 
-        // POST: Profile/Edit/5
+        // POST: Region/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,username,password,email,regionID,registrationDate,DoB")] Profile profile)
+        public async Task<IActionResult> Edit(int id, [Bind("ID,name")] Region region)
         {
-            if (id != profile.ID)
+            if (id != region.ID)
             {
                 return NotFound();
             }
@@ -106,12 +102,12 @@ namespace web.Controllers
             {
                 try
                 {
-                    _context.Update(profile);
+                    _context.Update(region);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProfileExists(profile.ID))
+                    if (!RegionExists(region.ID))
                     {
                         return NotFound();
                     }
@@ -122,51 +118,49 @@ namespace web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", profile.regionID);
-            return View(profile);
+            return View(region);
         }
 
-        // GET: Profile/Delete/5
+        // GET: Region/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Profiles == null)
+            if (id == null || _context.Regions == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profiles
-                .Include(p => p.region)
+            var region = await _context.Regions
                 .FirstOrDefaultAsync(m => m.ID == id);
-            if (profile == null)
+            if (region == null)
             {
                 return NotFound();
             }
 
-            return View(profile);
+            return View(region);
         }
 
-        // POST: Profile/Delete/5
+        // POST: Region/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Profiles == null)
+            if (_context.Regions == null)
             {
-                return Problem("Entity set 'sloveniatrips.Profiles'  is null.");
+                return Problem("Entity set 'sloveniatrips.Regions'  is null.");
             }
-            var profile = await _context.Profiles.FindAsync(id);
-            if (profile != null)
+            var region = await _context.Regions.FindAsync(id);
+            if (region != null)
             {
-                _context.Profiles.Remove(profile);
+                _context.Regions.Remove(region);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProfileExists(int id)
+        private bool RegionExists(int id)
         {
-          return (_context.Profiles?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Regions?.Any(e => e.ID == id)).GetValueOrDefault();
         }
     }
 }
