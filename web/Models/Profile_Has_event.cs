@@ -6,9 +6,7 @@ namespace web.Models
     public class Profile_Has_Events
     {
         public int ID { get; set; }
-        public int ProfileID { get; set; }
-        public Profile Profile { get; set; }
-        public int EventID { get; set; }
+        public ApplicationUser Profile { get; set; }
         public Event Event { get; set; }
     }
 }

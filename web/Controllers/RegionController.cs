@@ -21,6 +21,7 @@ namespace web.Controllers
         }
 
         // GET: Region
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
               return _context.Regions != null ? 
@@ -29,6 +30,7 @@ namespace web.Controllers
         }
 
         // GET: Region/Details/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Regions == null)
@@ -56,6 +58,7 @@ namespace web.Controllers
         // POST: Region/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,name")] Region region)
@@ -89,6 +92,7 @@ namespace web.Controllers
         // POST: Region/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,name")] Region region)
@@ -122,6 +126,7 @@ namespace web.Controllers
         }
 
         // GET: Region/Delete/5
+        [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Regions == null)
@@ -140,6 +145,7 @@ namespace web.Controllers
         }
 
         // POST: Region/Delete/5
+        [Authorize(Roles = "Administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

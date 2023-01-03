@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -25,30 +24,32 @@ namespace web.Controllers
         [Authorize(Roles = "Administrator")]
         public async Task<IActionResult> Index()
         {
-            var sloveniatrips = _context.Profiles.Include(p => p.region);
+            var sloveniatrips = _context.Profiles.Include(a => a.region);
             return View(await sloveniatrips.ToListAsync());
         }
-        [Authorize(Roles = "Administrator")]
+
         // GET: Profile/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Details(string id)
         {
             if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profiles
-                .Include(p => p.region)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (profile == null)
+            var applicationUser = await _context.Profiles
+                .Include(a => a.region)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (applicationUser == null)
             {
                 return NotFound();
             }
 
-            return View(profile);
+            return View(applicationUser);
         }
-        [Authorize(Roles = "Administrator")]
+
         // GET: Profile/Create
+        [Authorize(Roles = "Administrator")]
         public IActionResult Create()
         {
             ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID");
@@ -58,46 +59,48 @@ namespace web.Controllers
         // POST: Profile/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Administrator")]
-        public async Task<IActionResult> Create([Bind("ID,FirstName,LastName,username,password,email,regionID,registrationDate,DoB")] Profile profile)
+        public async Task<IActionResult> Create([Bind("ProfileID,FirstName,LastName,City,password,regionID,registrationDate,DoB,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(profile);
+                _context.Add(applicationUser);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", profile.regionID);
-            return View(profile);
+            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", applicationUser.regionID);
+            return View(applicationUser);
         }
 
         // GET: Profile/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        [Authorize(Roles = "Administrator")]
+        public async Task<IActionResult> Edit(string id)
         {
             if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profiles.FindAsync(id);
-            if (profile == null)
+            var applicationUser = await _context.Profiles.FindAsync(id);
+            if (applicationUser == null)
             {
                 return NotFound();
             }
-            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", profile.regionID);
-            return View(profile);
+            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", applicationUser.regionID);
+            return View(applicationUser);
         }
 
         // POST: Profile/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "Administrator")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ID,FirstName,LastName,username,password,email,regionID,registrationDate,DoB")] Profile profile)
+        public async Task<IActionResult> Edit(string id, [Bind("ProfileID,FirstName,LastName,City,password,regionID,registrationDate,DoB,Id,UserName,NormalizedUserName,Email,NormalizedEmail,EmailConfirmed,PasswordHash,SecurityStamp,ConcurrencyStamp,PhoneNumber,PhoneNumberConfirmed,TwoFactorEnabled,LockoutEnd,LockoutEnabled,AccessFailedCount")] ApplicationUser applicationUser)
         {
-            if (id != profile.ID)
+            if (id != applicationUser.Id)
             {
                 return NotFound();
             }
@@ -106,12 +109,12 @@ namespace web.Controllers
             {
                 try
                 {
-                    _context.Update(profile);
+                    _context.Update(applicationUser);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProfileExists(profile.ID))
+                    if (!ApplicationUserExists(applicationUser.Id))
                     {
                         return NotFound();
                     }
@@ -122,51 +125,53 @@ namespace web.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", profile.regionID);
-            return View(profile);
+            ViewData["regionID"] = new SelectList(_context.Regions, "ID", "ID", applicationUser.regionID);
+            return View(applicationUser);
         }
 
+        [Authorize(Roles = "Administrator")]
         // GET: Profile/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(string id)
         {
             if (id == null || _context.Profiles == null)
             {
                 return NotFound();
             }
 
-            var profile = await _context.Profiles
-                .Include(p => p.region)
-                .FirstOrDefaultAsync(m => m.ID == id);
-            if (profile == null)
+            var applicationUser = await _context.Profiles
+                .Include(a => a.region)
+                .FirstOrDefaultAsync(m => m.Id == id);
+            if (applicationUser == null)
             {
                 return NotFound();
             }
 
-            return View(profile);
+            return View(applicationUser);
         }
 
         // POST: Profile/Delete/5
+        [Authorize(Roles = "Administrator")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(string id)
         {
             if (_context.Profiles == null)
             {
                 return Problem("Entity set 'sloveniatrips.Profiles'  is null.");
             }
-            var profile = await _context.Profiles.FindAsync(id);
-            if (profile != null)
+            var applicationUser = await _context.Profiles.FindAsync(id);
+            if (applicationUser != null)
             {
-                _context.Profiles.Remove(profile);
+                _context.Profiles.Remove(applicationUser);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ProfileExists(int id)
+        private bool ApplicationUserExists(string id)
         {
-          return (_context.Profiles?.Any(e => e.ID == id)).GetValueOrDefault();
+          return (_context.Profiles?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

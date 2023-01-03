@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-var connectionString = builder.Configuration.GetConnectionString("sloveniatrips");
+var connectionString = builder.Configuration.GetConnectionString("AzureTrips");
 
 builder.Services.AddDbContext<sloveniatrips>(options =>
     options.UseSqlServer(connectionString));

@@ -197,6 +197,9 @@ namespace web.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("DoB")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -233,6 +236,9 @@ namespace web.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");
 
+                    b.Property<int>("ProfileID")
+                        .HasColumnType("int");
+
                     b.Property<string>("SecurityStamp")
                         .HasColumnType("nvarchar(max)");
 
@@ -242,6 +248,15 @@ namespace web.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("regionID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("registrationDate")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
@@ -253,7 +268,9 @@ namespace web.Migrations
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.ToTable("AspNetUsers", (string)null);
+                    b.HasIndex("regionID");
+
+                    b.ToTable("Profile", (string)null);
                 });
 
             modelBuilder.Entity("web.Models.Event", b =>
@@ -311,50 +328,6 @@ namespace web.Migrations
                     b.ToTable("Event_Has_activity", (string)null);
                 });
 
-            modelBuilder.Entity("web.Models.Profile", b =>
-                {
-                    b.Property<int>("ID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
-
-                    b.Property<DateTime>("DoB")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("password")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("regionID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("registrationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("username")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("ID");
-
-                    b.HasIndex("regionID");
-
-                    b.ToTable("Profile", (string)null);
-                });
-
             modelBuilder.Entity("web.Models.Profile_Has_Events", b =>
                 {
                     b.Property<int>("ID")
@@ -366,14 +339,14 @@ namespace web.Migrations
                     b.Property<int>("EventID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProfileID")
-                        .HasColumnType("int");
+                    b.Property<string>("ProfileId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
 
                     b.HasIndex("EventID");
 
-                    b.HasIndex("ProfileID");
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Profile_Has_Events", (string)null);
                 });
@@ -406,8 +379,9 @@ namespace web.Migrations
                     b.Property<int>("EventID")
                         .HasColumnType("int");
 
-                    b.Property<int>("ProfileID")
-                        .HasColumnType("int");
+                    b.Property<string>("ProfileId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("comment")
                         .IsRequired()
@@ -420,7 +394,7 @@ namespace web.Migrations
 
                     b.HasIndex("EventID");
 
-                    b.HasIndex("ProfileID");
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Review", (string)null);
                 });
@@ -476,6 +450,15 @@ namespace web.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("web.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("web.Models.Region", "region")
+                        .WithMany()
+                        .HasForeignKey("regionID");
+
+                    b.Navigation("region");
+                });
+
             modelBuilder.Entity("web.Models.Event", b =>
                 {
                     b.HasOne("web.Models.Region", "region")
@@ -506,15 +489,6 @@ namespace web.Migrations
                     b.Navigation("Event");
                 });
 
-            modelBuilder.Entity("web.Models.Profile", b =>
-                {
-                    b.HasOne("web.Models.Region", "region")
-                        .WithMany()
-                        .HasForeignKey("regionID");
-
-                    b.Navigation("region");
-                });
-
             modelBuilder.Entity("web.Models.Profile_Has_Events", b =>
                 {
                     b.HasOne("web.Models.Event", "Event")
@@ -523,11 +497,9 @@ namespace web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("web.Models.Profile", "Profile")
+                    b.HasOne("web.Models.ApplicationUser", "Profile")
                         .WithMany("Profile_Has_Events")
-                        .HasForeignKey("ProfileID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProfileId");
 
                     b.Navigation("Event");
 
@@ -542,9 +514,9 @@ namespace web.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("web.Models.Profile", "Profile")
+                    b.HasOne("web.Models.ApplicationUser", "Profile")
                         .WithMany("Reviews")
-                        .HasForeignKey("ProfileID")
+                        .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -558,17 +530,17 @@ namespace web.Migrations
                     b.Navigation("Event_Has_Activities");
                 });
 
-            modelBuilder.Entity("web.Models.Event", b =>
+            modelBuilder.Entity("web.Models.ApplicationUser", b =>
                 {
-                    b.Navigation("Event_has_activities");
-
                     b.Navigation("Profile_Has_Events");
 
                     b.Navigation("Reviews");
                 });
 
-            modelBuilder.Entity("web.Models.Profile", b =>
+            modelBuilder.Entity("web.Models.Event", b =>
                 {
+                    b.Navigation("Event_has_activities");
+
                     b.Navigation("Profile_Has_Events");
 
                     b.Navigation("Reviews");
