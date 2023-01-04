@@ -141,6 +141,13 @@ namespace web.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
+                var mail = await _userManager.FindByEmailAsync(Input.Email);
+                if (mail != null)
+                {
+                    ModelState.AddModelError(string.Empty, "A user with that email address already exists.");
+                    return Page();
+                }
+                
                 var user = new ApplicationUser { Email = Input.Email, UserName = Input.Username, DoB = Input.DoB, PhoneNumber = Input.PhoneNumber, regionID = Input.regionID, FirstName = Input.FirstName, LastName = Input.LastName };
                 await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);

@@ -17,7 +17,9 @@ builder.Services.AddDbContext<sloveniatrips>(options =>
 builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<sloveniatrips>();
-            
+
+
+builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 
@@ -32,12 +34,20 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+
+app.UseSwagger();
+app.UseSwaggerUI(c=>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SloveniaTrips API");
+});
+
 app.UseRouting();
 app.UseAuthentication();;
 
 app.UseAuthorization();
 
 app.MapRazorPages();
+
 
 app.MapControllerRoute(
     name: "default",
