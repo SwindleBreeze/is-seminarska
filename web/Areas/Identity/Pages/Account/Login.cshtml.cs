@@ -117,6 +117,8 @@ namespace web.Areas.Identity.Pages.Account
                 var result = await _signInManager.CheckPasswordSignInAsync(user, Input.Password, lockoutOnFailure: false);
                 if (result.Succeeded)
                 {
+                    var userId = await _userManager.GetUserIdAsync(user);
+                    Response.Cookies.Append("loginData", userId, new CookieOptions { Expires = DateTime.Now.AddDays(1) });
                     _logger.LogInformation("User logged in.");
                     await _signInManager.SignInAsync(user, isPersistent: Input.RememberMe);
 

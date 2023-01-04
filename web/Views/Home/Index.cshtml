@@ -1,9 +1,12 @@
 ﻿@using Microsoft.AspNetCore.Hosting;
 @inject IWebHostEnvironment hostingEnvironment;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor httpContextAccessor;
 
 @{
 ViewData["Title"] = "Home Page";
 var apiUrl = "";
+@* var userId = httpContextAccessor.HttpContext.Request.Cookies["userId"]; *@
 }
 
 @{
@@ -28,12 +31,56 @@ var apiUrl = "";
 @section scripts
 {
   <script>
-    //check if local host
-    fetch("@apiUrl"+"event")
-      .then(response => response.json())
-      .then(events =>{
-        console.log(events)
-      });
+    function getCookie(cookieName)
+    {
+      let cookie = {};
+      document.cookie.split(';').forEach(function(el) {
+        let [key,value] = el.split('=');
+        cookie[key.trim()] = value;
+      })
+      return cookie[cookieName];
+    }
+
+    let userId = (getCookie("loginData"))
+    let profileObject;
+    //GET PROFILE DATA
+    async function main()
+    {
+      await fetch("@apiUrl"+"profile/"+userId)
+        .then(response => response.json())
+        .then(profile =>{
+          console.log(profile)
+          profileObject = profile
+        });
+      console.log(profileObject.regionID)
+      //check if local host
+      await fetch("@apiUrl"+"event")
+        .then(response => response.json())
+        .then(events => {
+          let eventList = document.getElementById("event-list");
+          for (let i = 0; i < events.length; i++) {
+            if(events[i].regionID == profileObject.regionID)
+            {
+              let event = events[i];
+              let eventItem = document.createElement("div");
+              eventItem.innerHTML = event.name+"<br>"+event.location+"<br>"+event.date+"<br><hr>";
+              eventList.appendChild(eventItem);
+            }
+          }
+        });
+      await fetch("@apiUrl"+"eventhasactivity")
+        .then(response => response.json())
+        .then(eventhasactivity =>{
+          console.log(eventhasactivity)
+        });
+      await fetch("@apiUrl"+"activity")
+        .then(response => response.json())
+        .then(activity =>{
+          console.log(activity)
+        });
+    }
+    main();
+
   </script>
 }
 <div class="con1">
