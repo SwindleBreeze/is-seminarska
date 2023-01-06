@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using web.Data;
@@ -15,10 +16,22 @@ namespace web.Controllers_API
     public class ProfileApiController : ControllerBase
     {
         private readonly sloveniatrips _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public ProfileApiController(sloveniatrips context)
+        public ProfileApiController(UserManager<ApplicationUser> userManager,sloveniatrips context)
         {
             _context = context;
+            _userManager = userManager;
+        }
+
+        public class UserUpdateProfileModel
+        {
+            public string Name { get; set; }
+            public string Email { get; set; }
+            public string Username { get; set; }
+            public string PhoneNumber { get; set; }
+            public int regionID { get; set; }
+            public DateTime dob { get; set; }
         }
 
         // GET: api/ProfileApi
@@ -62,6 +75,79 @@ namespace web.Controllers_API
 
             _context.Entry(applicationUser).State = EntityState.Modified;
 
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ApplicationUserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
+        }
+
+        //PUT with user defined
+        [HttpPut("userupdate/{id}")]
+        public async Task<IActionResult> PutApplicationUser(string id, [FromBody]UserUpdateProfileModel model)
+        {
+            var applicationUser = await _context.Profiles.FindAsync(id);
+            if (applicationUser == null)
+            {
+                return NotFound();
+            }
+            var parts = model.Name.Split(" ");
+            applicationUser.FirstName = parts[0];
+            applicationUser.LastName = parts[1];
+            applicationUser.Email = model.Email;
+            applicationUser.PhoneNumber = model.PhoneNumber;
+            applicationUser.regionID = model.regionID;
+            applicationUser.DoB = model.dob;
+            applicationUser.UserName = model.Username;
+            applicationUser.SecurityStamp = Guid.NewGuid().ToString();
+
+        // Check if the new username is already taken
+            var usernameTaken = await _userManager.FindByNameAsync(model.Username);
+            if (usernameTaken != null && usernameTaken.Id != applicationUser.Id)
+            {
+                return Conflict("Username is already taken.");
+            }
+
+            // Check if the new email is already taken
+            var emailTaken = await _userManager.FindByEmailAsync(model.Email);
+            if (emailTaken != null && emailTaken.Id != applicationUser.Id)
+            {
+                return Conflict("Email is already taken.");
+            }
+            
+            // Update the user's name and email
+            var result = await _userManager.SetUserNameAsync(applicationUser, model.Username);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            result = await _userManager.SetEmailAsync(applicationUser, model.Email);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            result = await _userManager.UpdateAsync(applicationUser);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            // Save the changes to the database
+            _context.Entry(applicationUser).State = EntityState.Modified;
             try
             {
                 await _context.SaveChangesAsync();

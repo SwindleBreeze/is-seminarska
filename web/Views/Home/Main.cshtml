@@ -16,13 +16,13 @@ var apiUrl = "";
   }
   else
   {
-    apiUrl = "/api/v1/event";
+    apiUrl = "/api/v1/";
   }
 }
 <html>
     <head>
     <link href="/css/styles.css" rel="stylesheet" />
-    
+    <script src="https://kit.fontawesome.com/99aa5f36e5.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <div class="text-center">
@@ -33,7 +33,7 @@ var apiUrl = "";
             <div id="Profile" style="border: 1px solid black;">
                 <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
                     <a>Personal Information</a>
-                    <u style="font-size: small; " id="profileEditButton" >edit</u>
+                    <i class="fa-solid fa-user-pen" id="profileEditButton" style="font-size: 15px; float: right; margin-top: 13px;"></i>
                 </legend>
                 <div id="Profile-content">
                     <ul class="list-group" id="Profile-listcontent">
@@ -69,15 +69,34 @@ var apiUrl = "";
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="profileEditLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
+                        <h5 class="modal-title" id="profileEditLabel">Edit Profile</h5>
+                            <button type="button" class="btn-close" id="closeProfileModal" aria-label="Close"></button>
                         </button>
                     </div>
                     <div class="modal-body">
-                        ...
+                        <a style="font-weight: 500;">Name: </a><input type="text" placeholder="Firstname and Surname" id="editname"><br><hr>
+                        <a style="font-weight: 500;">Date of birth: </a> <input type="date" value="2017-06-01" id="editdob"/><br><hr>
+                        <a style="font-weight: 500;">Username: </a><input type="text" placeholder="Username" id="editusername"><br><hr>
+                        <a style="font-weight: 500;">E-mail: </a><input type="email" placeholder="E-mail" id="editemail"><br><hr>
+                        <a style="font-weight: 500;">Region: </a>
+                        <select id="editregionId">
+                            <option value="1">Gorenjska Slovenska</option>
+                            <option value="2">Gorizia</option>
+                            <option value="3">South Eastern Slovenia</option>
+                            <option value="4">Carinthia</option>
+                            <option value="5">Inner-kraška</option>
+                            <option value="6">Coastal-kraška</option>
+                            <option value="7">Inner Slovenia</option>
+                            <option value="8">Podravska</option>
+                            <option value="9">Pomurska</option>
+                            <option value="10">	Savinjska</option>
+                            <option value="11">	Lower Posavia</option>
+                            <option value="12">	Zasavska</option>
+                        </select><br><hr>
+                        <a style="font-weight: 500;">Phone Number: </a><input type="text" placeholder="Phone number" id="editphonenum"><br><hr>
                     </div>
                     <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="saveEdits">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -159,15 +178,71 @@ var apiUrl = "";
             }
         }
     }
+    function fillEditModal()
+    {
+        $("#editname").val(profileObject.firstName+" "+profileObject.lastName)
+        $("#editemail").val(profileObject.email)
+        console.log(profileObject.regionID)
+        $("#editregionId").val(profileObject.regionID).change()
+        $("#editusername").val(profileObject.userName)
+        $("#editdob").val(profileObject.doB.split("T")[0])
+        $("#editphonenum").val(profileObject.phoneNumber)
+    }
 
+    async function updateProfile()
+    {
+        let jObject = {
+            "name": $("#editname").val(),
+            "email": $("#editemail").val(),
+            "username": $("#editusername").val(),
+            "phoneNumber": $("#editphonenum").val(),
+            "regionID": $("#editregionId").val(),
+            "dob": $("#editdob").val()+"T20:00:00.000Z"
+        }
+
+        let newData = JSON.stringify(jObject)
+        
+        let response = await fetch("@apiUrl"+`profile/userupdate/${profileObject.id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: newData
+        });
+
+        // Check the status code of the response
+        if (response.ok) {
+            // If the status code is OK, then the update was successful
+            alert('Profile update successful');
+            await $.ajax({
+                url: '/Home/RefreshLoginPartial',
+                type: 'GET',
+                success: function(result) {
+                    $('#loginPartialContainer').html(result);
+                }
+            });
+            window.location.reload();
+        } else {
+            // If the status code is not OK, then the update was not successful
+            alert('Error updating profile: ' + response.statusText+' Please Contact an Admin');
+        }
+    }
 
     function setListeners()
     {
         $(document).ready(function(){
             $('#profileEditButton').click(function(){
-                $('#profileEditModal').modal('show')
+                $('#profileEditModal').modal('toggle')
+            });
+            $('#closeProfileModal').click(function(){
+                console.log("Hello")
+                $('#profileEditModal').modal('hide')
             });
         });
+
+        
+        $("#saveEdits").click(function()
+        {
+            updateProfile();
+        })
     }
     async function main()
     {
@@ -182,14 +257,16 @@ var apiUrl = "";
         // SET TITLE
         document.getElementById("EventsTitle").innerHTML+=" "+profileObject.userName
         displayPersonalInfo();
+        fillEditModal();
+        console.log(profileObject)
         // GET ALL EVENTS IN USER REGION
+        let eventsArray = []
         await fetch("@apiUrl"+"event/region/"+profileObject.regionID)
             .then(response => response.json())
             .then(events => {
             console.log("Got events")
-            console.log(events)
+            eventsArray = events
             });
-
         
         await fetch("@apiUrl"+"eventhasactivity")
             .then(response => response.json())
@@ -203,6 +280,5 @@ var apiUrl = "";
             });
         setListeners()
     }
-
   </script>
 }
