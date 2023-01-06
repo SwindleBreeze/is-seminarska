@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "mcYbY7W3Y/ztjicl+pSG+6Ccf+JjTtX0oea29Qxn6kw=",
+  "Hash": "jQpiQA0RJ5kftW1nvuxAvKx5ZMfQyoBN1QAdqRxYAPA=",
   "Source": "web",
   "BasePath": "_content/web",
   "Mode": "Default",
@@ -1071,6 +1071,23 @@
       "OriginalItemSpec": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\obj\\Debug\\net6.0\\scopedcss\\projectbundle\\web.bundle.scp.css"
     },
     {
+      "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\castle-bg.jpg",
+      "SourceId": "web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\",
+      "BasePath": "_content/web",
+      "RelativePath": "castle-bg.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\castle-bg.jpg"
+    },
+    {
       "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\css\\site.css",
       "SourceId": "web",
       "SourceType": "Discovered",
@@ -1086,6 +1103,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\site.css"
+    },
+    {
+      "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\css\\styles.css",
+      "SourceId": "web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\",
+      "BasePath": "_content/web",
+      "RelativePath": "css/styles.css",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\css\\styles.css"
     },
     {
       "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\favicon.ico",

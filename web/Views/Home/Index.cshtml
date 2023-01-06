@@ -9,28 +9,19 @@ var apiUrl = "";
 @* var userId = httpContextAccessor.HttpContext.Request.Cookies["userId"]; *@
 }
 
-@{
-  if (hostingEnvironment.IsDevelopment())
-  {
-    apiUrl = "https://localhost:7092/api/v1/";
-  }
-  else
-  {
-    apiUrl = "/api/v1/event";
-  }
-}
-
-<div class="text-center">
-   <h1 class="display-4">Welcome to SloveniaTrips</h1>
-   <p>We help each other grow &lt;3</p>
-</div>
-<div id="event-list">
-
-</div>
-
-@section scripts
+@section Scripts
 {
+  <script src="~/lib/jquery/dist/jquery.min.js"></script>
+  <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="~/js/site.js" asp-append-version="true"></script>
   <script>
+    function setCookie(cName, cValue, expDays) 
+    {
+        let date = new Date();
+        date.setTime(date.getTime() + (expDays * 24 * 60 * 60 * 1000));
+        const expires = "expires=" + date.toUTCString();
+        document.cookie = cName + "=" + cValue + "; " + expires + "; path=/";
+    }
     function getCookie(cookieName)
     {
       let cookie = {};
@@ -42,48 +33,48 @@ var apiUrl = "";
     }
 
     let userId = (getCookie("loginData"))
-    let profileObject;
-    //GET PROFILE DATA
-    async function main()
+    if(userId == null || userId =="")
     {
-      await fetch("@apiUrl"+"profile/"+userId)
-        .then(response => response.json())
-        .then(profile =>{
-          console.log(profile)
-          profileObject = profile
-        });
-      console.log(profileObject.regionID)
-      //check if local host
-      await fetch("@apiUrl"+"event")
-        .then(response => response.json())
-        .then(events => {
-          let eventList = document.getElementById("event-list");
-          for (let i = 0; i < events.length; i++) {
-            if(events[i].regionID == profileObject.regionID)
-            {
-              let event = events[i];
-              let eventItem = document.createElement("div");
-              eventItem.innerHTML = event.name+"<br>"+event.location+"<br>"+event.date+"<br><hr>";
-              eventList.appendChild(eventItem);
-            }
-          }
-        });
-      await fetch("@apiUrl"+"eventhasactivity")
-        .then(response => response.json())
-        .then(eventhasactivity =>{
-          console.log(eventhasactivity)
-        });
-      await fetch("@apiUrl"+"activity")
-        .then(response => response.json())
-        .then(activity =>{
-          console.log(activity)
-        });
+      // Make an AJAX request to the SignOutIfCookieIsEmpty action
+      $.ajax({
+          url: '/Home/SignOutIfCookieIsEmpty',
+          type: 'post'
+      });
+        // Apply setCookie
+      setCookie('loginData', '', 30);
     }
-    main();
 
   </script>
 }
-<div class="con1">
+<head>
+  <link href="/css/styles.css" rel="stylesheet" />
+</head>
+
+<div class="text-center">
+   <h1 class="display-4">Welcome to SloveniaTrips</h1>
+   <p>We help each other grow &lt;3</p>
+</div>
+<div class="bg-img"></div>
+<div class="TextBlock1">
+  <div class="TextBlockTitle">
+    What is this?
+  </div>
+  This is a small application developed by two Students. We want to help you find interesting cultural events around you
+</div>
+<div class="TextBlock2">
+  <div class="TextBlockTitle">
+    What is our mission?
+  </div>
+  We wanted to aquaint tourists with our lovely little country culturally and historically in as little time as possible
+</div>
+<div class="TextBlock1">
+  <div class="TextBlockTitle">
+    Want to know more?
+  </div>
+  We have a partner website where you can find out more about our country.<br>
+  <a href="https://www.travel-slovenia.si/slovenia/" style="color: black;"><u>Travel Slovenia</u></a>
+</div>
+@* <div class="con1">
    <div class="con2">
       <div style="border: 1px solid black; width:500px;height:500px;margin-top:10px;float:left">Edin<br>Ćehić<br>Osrednjeslovenska regija<br>Obiskani dogodki: Dražba za umetnine 19.st</div>
    </div>
@@ -120,4 +111,4 @@ var apiUrl = "";
         </div>
       
    </div>
-</div>
+</div> *@

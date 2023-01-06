@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
+using web.Data;
 using web.Models;
 
 namespace web.Areas.Identity.Pages.Account
@@ -31,12 +32,15 @@ namespace web.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
+        private readonly sloveniatrips _context;
+
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            sloveniatrips context)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -44,6 +48,7 @@ namespace web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _context = context;
         }
 
         /// <summary>
@@ -147,8 +152,9 @@ namespace web.Areas.Identity.Pages.Account
                     ModelState.AddModelError(string.Empty, "A user with that email address already exists.");
                     return Page();
                 }
-                
-                var user = new ApplicationUser { Email = Input.Email, UserName = Input.Username, DoB = Input.DoB, PhoneNumber = Input.PhoneNumber, regionID = Input.regionID, FirstName = Input.FirstName, LastName = Input.LastName };
+
+                Region region = _context.Regions.FirstOrDefault<Region>(r =>r.ID == Input.regionID);
+                var user = new ApplicationUser { Email = Input.Email, UserName = Input.Username, DoB = Input.DoB, PhoneNumber = Input.PhoneNumber, region = region, FirstName = Input.FirstName, LastName = Input.LastName };
                 await _userStore.SetUserNameAsync(user, Input.Username, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
                 var result = await _userManager.CreateAsync(user, Input.Password);
@@ -176,6 +182,7 @@ namespace web.Areas.Identity.Pages.Account
                     else
                     {
                         await _signInManager.SignInAsync(user, isPersistent: false);
+                        Response.Cookies.Append("loginData", userId, new CookieOptions { Expires = DateTime.Now.AddDays(1) });
                         return LocalRedirect(returnUrl);
                     }
                 }

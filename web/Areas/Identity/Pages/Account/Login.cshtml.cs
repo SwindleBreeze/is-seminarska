@@ -122,7 +122,7 @@ namespace web.Areas.Identity.Pages.Account
                     _logger.LogInformation("User logged in.");
                     await _signInManager.SignInAsync(user, isPersistent: Input.RememberMe);
 
-                    return LocalRedirect(returnUrl);
+                    return RedirectToAction("Main", "Home");
                 }
                 if (result.RequiresTwoFactor)
                 {

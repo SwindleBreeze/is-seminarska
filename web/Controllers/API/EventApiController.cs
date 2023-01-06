@@ -120,5 +120,21 @@ namespace web.Controllers_API
         {
             return (_context.Events?.Any(e => e.ID == id)).GetValueOrDefault();
         }
+
+        [HttpGet]
+        [Route("region/{regionId}")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetEventsByRegion(int regionId)
+        {
+            if (_context.Events == null)
+            {
+                return NotFound();
+            }
+            var events = await _context.Events.Where(e => e.regionID == regionId).ToListAsync();
+            if (events == null)
+            {
+                return NotFound();
+            }
+            return events;
+        }
     }
 }
