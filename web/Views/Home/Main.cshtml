@@ -22,7 +22,7 @@ var apiUrl = "";
 <html>
     <head>
     <link href="/css/styles.css" rel="stylesheet" />
-    
+    <script src="https://kit.fontawesome.com/99aa5f36e5.js" crossorigin="anonymous"></script>
     </head>
     <body>
         <div class="text-center">
@@ -54,12 +54,8 @@ var apiUrl = "";
                     Upcoming Events
                 </legend>
                 <div id="event-list-content">
-                    <ul class="list-group" id="event-listcontent">
-                        <li class="list-group-item">Cras justo odio</li>
-                        <li class="list-group-item">Dapibus ac facilisis in</li>
-                        <li class="list-group-item">Morbi leo risus</li>
-                        <li class="list-group-item">Porta ac consectetur ac</li>
-                        <li class="list-group-item">Vestibulum at eros</li>
+                    <ul class="list-group" id="event-listcontent">  
+                        @* <li class="list-group-item">Cras justo<br>odio</li> *@
                     </ul>
                 </div>
             </div>
@@ -126,8 +122,6 @@ var apiUrl = "";
             });
         for(let [key, attrib] of Object.entries(profileObject))
         {
-            console.log(key+", "+attrib)
-
             if(key == "firstName")
             {
                 document.getElementById("list-fullname").innerHTML+=attrib
@@ -168,14 +162,24 @@ var apiUrl = "";
                 $('#profileEditModal').modal('show')
             });
         });
+        for(let i=0;i<displayed;i++)
+        {
+
+        $("#info"+i).click(function(){
+                     console.log("more info")
+                    return false;
+                    });
+        }
     }
+
+    let displayed=0
+
     async function main()
     {
         //GET PROFILE BY ID
         await fetch("@apiUrl"+"profile/"+userId)
             .then(response => response.json())
             .then(profile =>{
-                console.log(profile)
                 profileObject = profile
             });
 
@@ -183,23 +187,95 @@ var apiUrl = "";
         document.getElementById("EventsTitle").innerHTML+=" "+profileObject.userName
         displayPersonalInfo();
         // GET ALL EVENTS IN USER REGION
+
+        let eventsArray=[]
+
         await fetch("@apiUrl"+"event/region/"+profileObject.regionID)
             .then(response => response.json())
             .then(events => {
-            console.log("Got events")
-            console.log(events)
+                eventsArray=events
             });
+
+        // console.log(eventsArray)
+    
+        let izpis=""
+        @* let listItem = document.createElement('li');
+        listItem.classList.add("list-group-item"); *@
+
+
+
+        for (let i = 0; i < eventsArray.length; i++) {
+            displayed++
+            console.log(eventsArray[i])
+            let listItem = document.createElement('li');
+            
+            //var button = document.createElement("button")
+            
+            listItem.classList.add("list-group-item");
+
+    
+
+            for (let [key, attrib] of Object.entries(eventsArray[i])) {
+                if (key == "name") {
+                    izpis = attrib + ","
+                    listItem.appendChild(document.createTextNode(izpis));
+                    listItem.innerHTML += "<br>";
+                } else if (key == "date") {
+                    let parts = attrib.split("T")
+                    let day = parts[0].split('-')[2]
+                    let month = parts[0].split('-')[1]
+                    let year = parts[0].split('-')[0]
+                    let finaldate = day + "." + month + "." + year
+                    izpis = finaldate + ","
+
+                    listItem.appendChild(document.createTextNode(izpis));
+
+                    // Add a line break
+                    listItem.innerHTML += "<br>";
+
+                } else if (key == "location") {
+                    izpis = attrib
+
+                    listItem.appendChild(document.createTextNode(izpis));
+                    
+                    @* button.value = "My Button"
+                    button.style.styleFloat = 'right';
+                    button.style.cssFloat = 'right'; *@
+
+
+                    
+                    var ii = document.createElement("i")
+                    var link=document.createElement("a")
+                    
+                    ii.style.styleFloat = 'right';
+                    ii.style.cssFloat = 'right'; 
+                    ii.setAttribute("id","info"+i)
+
+                    
+                    
+                    ii.classList.add("fa-solid");
+                    ii.classList.add("fa-file-lines");
+                    ii.appendChild(link)
+                    listItem.appendChild(ii)
+                    
+                   // listItem.appendChild(button)
+                    
+                }
+                izpis = ""
+            }
+
+            document.getElementById('event-listcontent').appendChild(listItem);
+        }
+
 
         
         await fetch("@apiUrl"+"eventhasactivity")
             .then(response => response.json())
             .then(eventhasactivity =>{
-            console.log(eventhasactivity)
             });
         await fetch("@apiUrl"+"activity")
             .then(response => response.json())
             .then(activity =>{
-            console.log(activity)
             });
         setListeners()
     }
