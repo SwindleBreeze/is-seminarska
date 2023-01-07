@@ -55,7 +55,7 @@ var apiUrl = "";
                 </legend>
                 <div id="event-list-content">
                     <ul class="list-group" id="event-listcontent">  
-                        @* <li class="list-group-item">Cras justo<br>odio</li> *@
+                        @* <li class="list-group-item">Cras justo odio</li> *@
                     </ul>
                 </div>
             </div>
@@ -66,6 +66,23 @@ var apiUrl = "";
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="profileEditLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="InfoLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="InfoLabel">Modal title</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                         </button>
@@ -161,15 +178,27 @@ var apiUrl = "";
             $('#profileEditButton').click(function(){
                 $('#profileEditModal').modal('show')
             });
-        });
-        for(let i=0;i<displayed;i++)
-        {
 
-        $("#info"+i).click(function(){
-                     console.log("more info")
+            for(let i=0;i<displayed;i++)
+            {
+                @* $("#info"+i).click(function(){
+                        $('#InfoModal').modal('show')
+                        }); *@
+
+                $("#going"+i).click(function(){
+                    console.log("i am going")
                     return false;
-                    });
-        }
+                });
+            }
+
+            $('#InfoButton').click(function(){
+                $('#InfoModal').modal('show')
+            });
+        });
+        
+        
+        
+        
     }
 
     let displayed=0
@@ -198,25 +227,27 @@ var apiUrl = "";
 
         // console.log(eventsArray)
     
-        let izpis=""
-        @* let listItem = document.createElement('li');
-        listItem.classList.add("list-group-item"); *@
-
+        let izpis = ""
 
 
         for (let i = 0; i < eventsArray.length; i++) {
             displayed++
-            console.log(eventsArray[i])
+           // console.log(eventsArray[i])
             let listItem = document.createElement('li');
-            
+
             //var button = document.createElement("button")
-            
+
             listItem.classList.add("list-group-item");
 
-    
+            let id
 
             for (let [key, attrib] of Object.entries(eventsArray[i])) {
-                if (key == "name") {
+
+                //console.log(key, attrib)
+
+                if (key == "id") {
+                    id = attrib
+                } else if (key == "name") {
                     izpis = attrib + ","
                     listItem.appendChild(document.createTextNode(izpis));
                     listItem.innerHTML += "<br>";
@@ -230,53 +261,97 @@ var apiUrl = "";
 
                     listItem.appendChild(document.createTextNode(izpis));
 
-                    // Add a line break
                     listItem.innerHTML += "<br>";
 
                 } else if (key == "location") {
                     izpis = attrib
 
                     listItem.appendChild(document.createTextNode(izpis));
-                    
-                    @* button.value = "My Button"
-                    button.style.styleFloat = 'right';
-                    button.style.cssFloat = 'right'; *@
+                    listItem.innerHTML += "<br>";
+
+                    var info = document.createElement("i")
+                    var linkInfo = document.createElement("a")
+
+                    info.style.styleFloat = 'left';
+                    info.style.cssFloat = 'left';
+                    info.setAttribute("id", "info" + id)
+
+                    info.classList.add("fa-solid");
+                    info.classList.add("fa-file-lines");
 
 
-                    
-                    var ii = document.createElement("i")
-                    var link=document.createElement("a")
-                    
-                    ii.style.styleFloat = 'right';
-                    ii.style.cssFloat = 'right'; 
-                    ii.setAttribute("id","info"+i)
+                    var going = document.createElement("i")
+                    var linkGoing = document.createElement("a")
 
-                    
-                    
-                    ii.classList.add("fa-solid");
-                    ii.classList.add("fa-file-lines");
-                    ii.appendChild(link)
-                    listItem.appendChild(ii)
-                    
-                   // listItem.appendChild(button)
-                    
+                    going.style.styleFloat = 'right';
+                    going.style.cssFloat = 'right';
+                    going.style.fontSize = "20px";
+                    going.setAttribute("id", "going" + id)
+
+                    going.classList.add("fa-solid");
+                    going.classList.add("fa-calendar-plus");
+
+
+                    info.appendChild(linkInfo)
+                    going.appendChild(linkGoing)
+
+                    listItem.appendChild(info)
+
+                    listItem.appendChild(going)
+
+
                 }
                 izpis = ""
             }
-
             document.getElementById('event-listcontent').appendChild(listItem);
         }
+        @* for (let i = 0; i < eventsArray.length; i++) {
+            $("#info" + eventsArray[i].id).click(function() {
+                $('#InfoModal').modal('show')
+                console.log("info" + eventsArray[i].id)
+            });
+        } *@
 
 
-        
+        let eventhasactivityArray=[]
         await fetch("@apiUrl"+"eventhasactivity")
             .then(response => response.json())
             .then(eventhasactivity =>{
+                eventhasactivityArray=eventhasactivity
             });
+
+        
+
+        
+
+
+        let activityArray=[]
+
         await fetch("@apiUrl"+"activity")
             .then(response => response.json())
             .then(activity =>{
+                        activityArray=activity
             });
+
+
+        for (let i = 0; i < eventhasactivityArray.length; i++) {
+            
+
+            for (let [key, attrib] of Object.entries(eventhasactivityArray[i])) {
+                console.log(key,attrib)
+            }
+        }
+        
+        
+        /*for (let i = 0; i < eventsArray.length; i++) {
+            $("#info" + eventsArray[i].id).click(function() {
+                $('#InfoModal').modal('show')
+                //console.log("info" + eventsArray[i].id)
+                $('.modal-body').text(activityArray[i].description);
+
+            });
+        }*/
+
         setListeners()
     }
 
