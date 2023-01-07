@@ -6,6 +6,7 @@ namespace web.Models{
         public int ID { get; set; }
 
         public int ActivityID { get; set; }
+        public int eventID { get; set; }
         public int regionID { get; set; }
         public Event Event { get; set; }
         public Activity Activity { get; set; }
