@@ -269,12 +269,19 @@ var apiUrl = "";
                 $('#InfoModal').modal('show')
             });
         });
+<<<<<<< HEAD
+        
+        
+        
+        
+=======
 
         
         $("#saveEdits").click(function()
         {
             updateProfile();
         })
+>>>>>>> 67289b0786441c5960b60a175adc3b2cdcab984a
     }
 
     let displayed=0
@@ -299,20 +306,15 @@ var apiUrl = "";
         fillEditModal();
         console.log(profileObject)
         // GET ALL EVENTS IN USER REGION
+<<<<<<< HEAD
 
-        let eventsArray = []
-        
-        await fetch("@apiUrl"+"event/region/"+profileObject.regionID,{
-            method: 'GET',
-            headers: {
-            'ApiKey': 'secret'
-            }
-        })
-        .then(response => response.json())
-        .then(events => {
-        console.log("Got events")
-        eventsArray = events
-        });
+        let eventsArray=[]
+
+        await fetch("@apiUrl"+"event/region/"+profileObject.regionID)
+            .then(response => response.json())
+            .then(events => {
+                eventsArray=events
+            });
 
         // console.log(eventsArray)
     
@@ -393,7 +395,6 @@ var apiUrl = "";
                 izpis = ""
             }
             document.getElementById('event-listcontent').appendChild(listItem);
-            console.log("Hello")
         }
         @* for (let i = 0; i < eventsArray.length; i++) {
             $("#info" + eventsArray[i].id).click(function() {
@@ -404,6 +405,20 @@ var apiUrl = "";
 
 
         let eventhasactivityArray=[]
+        await fetch("@apiUrl"+"eventhasactivity")
+=======
+        let eventsArray = []
+        await fetch("@apiUrl"+"event/region/"+profileObject.regionID,{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
+        .then(response => response.json())
+        .then(events => {
+        console.log("Got events")
+        eventsArray = events
+        });
         
         await fetch("@apiUrl"+"eventhasactivity",{
             method: 'GET',
@@ -411,26 +426,38 @@ var apiUrl = "";
             'ApiKey': 'secret'
             }
         })
+>>>>>>> 67289b0786441c5960b60a175adc3b2cdcab984a
             .then(response => response.json())
             .then(eventhasactivity =>{
                 eventhasactivityArray=eventhasactivity
             });
+<<<<<<< HEAD
+
+        
+
+        
+
 
         let activityArray=[]
+
+        await fetch("@apiUrl"+"activity")
+=======
         await fetch("@apiUrl"+"activity",{
             method: 'GET',
             headers: {
             'ApiKey': 'secret'
             }
         })
+>>>>>>> 67289b0786441c5960b60a175adc3b2cdcab984a
             .then(response => response.json())
             .then(activity =>{
-                activityArray=activity
+                        activityArray=activity
             });
 
 
         for (let i = 0; i < eventhasactivityArray.length; i++) {
             
+
             for (let [key, attrib] of Object.entries(eventhasactivityArray[i])) {
                 console.log(key,attrib)
             }

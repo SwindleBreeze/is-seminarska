@@ -1,0 +1,208 @@
+@using Microsoft.AspNetCore.Hosting;
+@inject IWebHostEnvironment hostingEnvironment;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor httpContextAccessor;
+
+@{
+ViewData["Title"] = "Home Page";
+var apiUrl = "";
+@* var userId = httpContextAccessor.HttpContext.Request.Cookies["userId"]; *@
+}
+
+@{
+  if (hostingEnvironment.IsDevelopment())
+  {
+    apiUrl = "https://localhost:7092/api/v1/";
+  }
+  else
+  {
+    apiUrl = "/api/v1/event";
+  }
+}
+<html>
+    <head>
+    <link href="/css/styles.css" rel="stylesheet" />
+    
+    </head>
+    <body>
+        <div class="text-center">
+        <h1 class="display-4" id="EventsTitle">Welcome to the event planner</h1>
+        </div>
+        <hr>
+        <div id="mainContainer">
+            <div id="Profile" style="border: 1px solid black;">
+                <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
+                    <a>Personal Information</a>
+                    <u style="font-size: small; " id="profileEditButton" >edit</u>
+                </legend>
+                <div id="Profile-content">
+                    <ul class="list-group" id="Profile-listcontent">
+                        <li class="list-group-item" id='list-fullname'><a style="font-weight: 500;">Name: </a></li>
+                        <li class="list-group-item" id='list-dob'><a style="font-weight: 500;">Date of birth: </a></li>
+                        <li class="list-group-item" id='list-username'><a style="font-weight: 500;">Username: </a></li>
+                        <li class="list-group-item" id='list-email'><a style="font-weight: 500;">E-mail: </a></li>
+                        <li class="list-group-item" id='list-region'><a style="font-weight: 500;">Region: </a></li>
+                        <li class="list-group-item" id='list-phonenum'><a style="font-weight: 500;">Phone Number: </a></li>
+                        <li class="list-group-item" id='list-plannedevents'><a style="font-weight: 500;">Planned Events </a></li>
+                        <li class="list-group-item" id='list-finishedevents'><a style="font-weight: 500;">Finished Events </a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div id="event-list" style="border: 1px solid black;">
+                <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
+                    Upcoming Events
+                </legend>
+                <div id="event-list-content">
+                    <ul class="list-group" id="event-listcontent">
+                        <li class="list-group-item">Cras justo odio</li>
+                        <li class="list-group-item">Dapibus ac facilisis in</li>
+                        <li class="list-group-item">Morbi leo risus</li>
+                        <li class="list-group-item">Porta ac consectetur ac</li>
+                        <li class="list-group-item">Vestibulum at eros</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="profileEditModal" tabindex="-1" role="dialog" aria-labelledby="profileEditLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="profileEditLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</html>
+
+
+
+@section scripts
+{
+  <script>
+    function getCookie(cookieName)
+    {
+      let cookie = {};
+      document.cookie.split(';').forEach(function(el) {
+        let [key,value] = el.split('=');
+        cookie[key.trim()] = value;
+      })
+      return cookie[cookieName];
+    }
+
+    //CHECK IF LOGGED IN
+    let userId = (getCookie("loginData"))
+    if(userId != null && userId.length != 0)
+    {
+      main();
+    }
+    else
+    {
+        window.location.replace('/Home/Index');
+    }
+    let profileObject;
+
+    async function displayPersonalInfo()
+    {
+
+        await fetch("@apiUrl"+"region/"+profileObject.regionID)
+            .then(response => response.json())
+            .then(region =>{
+            document.getElementById("list-region").innerHTML+=region.name
+            });
+        for(let [key, attrib] of Object.entries(profileObject))
+        {
+            console.log(key+", "+attrib)
+
+            if(key == "firstName")
+            {
+                document.getElementById("list-fullname").innerHTML+=attrib
+            }
+            if(key == "lastName")
+            {
+                document.getElementById("list-fullname").innerHTML+=" "+attrib
+            }
+            if(key == "doB")
+            {
+                let parts = attrib.split("T")
+                let day = parts[0].split('-')[2]
+                let month = parts[0].split('-')[1]
+                let year = parts[0].split('-')[0]
+                let finaldate = day+"."+month+"."+year
+                document.getElementById("list-dob").innerHTML+=" "+finaldate
+            }
+            if(key == "userName")
+            {
+                document.getElementById("list-username").innerHTML+=" "+attrib
+            }
+            if(key == "email")
+            {
+                document.getElementById("list-email").innerHTML+=" "+attrib
+            }
+            if(key == "phoneNumber")
+            {
+                document.getElementById("list-phonenum").innerHTML+=" "+attrib
+            }
+        }
+    }
+
+
+    function setListeners()
+    {
+        $(document).ready(function(){
+            $('#profileEditButton').click(function(){
+                $('#profileEditModal').modal('show')
+            });
+        });
+    }
+    async function main()
+    {
+        //GET PROFILE BY ID
+        await fetch("@apiUrl"+"profile/"+userId)
+            .then(response => response.json())
+            .then(profile =>{
+                console.log(profile)
+                profileObject = profile
+            });
+
+        // SET TITLE
+        document.getElementById("EventsTitle").innerHTML+=" "+profileObject.userName
+        displayPersonalInfo();
+        // GET ALL EVENTS IN USER REGION
+        await fetch("@apiUrl"+"event/region/"+profileObject.regionID)
+            .then(response => response.json())
+            .then(events => {
+            console.log("Got events")
+            console.log(events)
+            });
+
+        
+        await fetch("@apiUrl"+"eventhasactivity")
+            .then(response => response.json())
+            .then(eventhasactivity =>{
+            console.log(eventhasactivity)
+            });
+        await fetch("@apiUrl"+"activity")
+            .then(response => response.json())
+            .then(activity =>{
+            console.log(activity)
+            });
+        setListeners()
+    }
+
+  </script>
+}

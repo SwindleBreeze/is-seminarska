@@ -54,8 +54,12 @@ var apiUrl = "";
                     Upcoming Events
                 </legend>
                 <div id="event-list-content">
-                    <ul class="list-group" id="event-listcontent">  
-                        @* <li class="list-group-item">Cras justo odio</li> *@
+                    <ul class="list-group" id="event-listcontent">
+                        <li class="list-group-item">Cras justo odio</li>
+                        <li class="list-group-item">Dapibus ac facilisis in</li>
+                        <li class="list-group-item">Morbi leo risus</li>
+                        <li class="list-group-item">Porta ac consectetur ac</li>
+                        <li class="list-group-item">Vestibulum at eros</li>
                     </ul>
                 </div>
             </div>
@@ -93,23 +97,6 @@ var apiUrl = "";
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-primary" id="saveEdits">Save changes</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="InfoLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="InfoLabel">Modal title</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        ...
-                    </div>
-                    <div class="modal-footer">
                     </div>
                 </div>
             </div>
@@ -163,6 +150,8 @@ var apiUrl = "";
             });
         for(let [key, attrib] of Object.entries(profileObject))
         {
+            console.log(key+", "+attrib)
+
             if(key == "firstName")
             {
                 document.getElementById("list-fullname").innerHTML+=attrib
@@ -252,22 +241,6 @@ var apiUrl = "";
                 console.log("Hello")
                 $('#profileEditModal').modal('hide')
             });
-
-            for(let i=0;i<displayed;i++)
-            {
-                @* $("#info"+i).click(function(){
-                        $('#InfoModal').modal('show')
-                        }); *@
-
-                $("#going"+i).click(function(){
-                    console.log("i am going")
-                    return false;
-                });
-            }
-
-            $('#InfoButton').click(function(){
-                $('#InfoModal').modal('show')
-            });
         });
 
         
@@ -276,9 +249,6 @@ var apiUrl = "";
             updateProfile();
         })
     }
-
-    let displayed=0
-
     async function main()
     {
         //GET PROFILE BY ID
@@ -290,6 +260,7 @@ var apiUrl = "";
         })
             .then(response => response.json())
             .then(profile =>{
+                console.log(profile)
                 profileObject = profile
             });
 
@@ -299,9 +270,7 @@ var apiUrl = "";
         fillEditModal();
         console.log(profileObject)
         // GET ALL EVENTS IN USER REGION
-
         let eventsArray = []
-        
         await fetch("@apiUrl"+"event/region/"+profileObject.regionID,{
             method: 'GET',
             headers: {
@@ -313,97 +282,6 @@ var apiUrl = "";
         console.log("Got events")
         eventsArray = events
         });
-
-        // console.log(eventsArray)
-    
-        let izpis = ""
-
-
-        for (let i = 0; i < eventsArray.length; i++) {
-            displayed++
-           // console.log(eventsArray[i])
-            let listItem = document.createElement('li');
-
-            //var button = document.createElement("button")
-
-            listItem.classList.add("list-group-item");
-
-            let id
-
-            for (let [key, attrib] of Object.entries(eventsArray[i])) {
-
-                //console.log(key, attrib)
-
-                if (key == "id") {
-                    id = attrib
-                } else if (key == "name") {
-                    izpis = attrib + ","
-                    listItem.appendChild(document.createTextNode(izpis));
-                    listItem.innerHTML += "<br>";
-                } else if (key == "date") {
-                    let parts = attrib.split("T")
-                    let day = parts[0].split('-')[2]
-                    let month = parts[0].split('-')[1]
-                    let year = parts[0].split('-')[0]
-                    let finaldate = day + "." + month + "." + year
-                    izpis = finaldate + ","
-
-                    listItem.appendChild(document.createTextNode(izpis));
-
-                    listItem.innerHTML += "<br>";
-
-                } else if (key == "location") {
-                    izpis = attrib
-
-                    listItem.appendChild(document.createTextNode(izpis));
-                    listItem.innerHTML += "<br>";
-
-                    var info = document.createElement("i")
-                    var linkInfo = document.createElement("a")
-
-                    info.style.styleFloat = 'left';
-                    info.style.cssFloat = 'left';
-                    info.setAttribute("id", "info" + id)
-
-                    info.classList.add("fa-solid");
-                    info.classList.add("fa-file-lines");
-
-
-                    var going = document.createElement("i")
-                    var linkGoing = document.createElement("a")
-
-                    going.style.styleFloat = 'right';
-                    going.style.cssFloat = 'right';
-                    going.style.fontSize = "20px";
-                    going.setAttribute("id", "going" + id)
-
-                    going.classList.add("fa-solid");
-                    going.classList.add("fa-calendar-plus");
-
-
-                    info.appendChild(linkInfo)
-                    going.appendChild(linkGoing)
-
-                    listItem.appendChild(info)
-
-                    listItem.appendChild(going)
-
-
-                }
-                izpis = ""
-            }
-            document.getElementById('event-listcontent').appendChild(listItem);
-            console.log("Hello")
-        }
-        @* for (let i = 0; i < eventsArray.length; i++) {
-            $("#info" + eventsArray[i].id).click(function() {
-                $('#InfoModal').modal('show')
-                console.log("info" + eventsArray[i].id)
-            });
-        } *@
-
-
-        let eventhasactivityArray=[]
         
         await fetch("@apiUrl"+"eventhasactivity",{
             method: 'GET',
@@ -413,10 +291,8 @@ var apiUrl = "";
         })
             .then(response => response.json())
             .then(eventhasactivity =>{
-                eventhasactivityArray=eventhasactivity
+            console.log(eventhasactivity)
             });
-
-        let activityArray=[]
         await fetch("@apiUrl"+"activity",{
             method: 'GET',
             headers: {
@@ -425,27 +301,8 @@ var apiUrl = "";
         })
             .then(response => response.json())
             .then(activity =>{
-                activityArray=activity
+            console.log(activity)
             });
-
-
-        for (let i = 0; i < eventhasactivityArray.length; i++) {
-            
-            for (let [key, attrib] of Object.entries(eventhasactivityArray[i])) {
-                console.log(key,attrib)
-            }
-        }
-        
-        
-        /*for (let i = 0; i < eventsArray.length; i++) {
-            $("#info" + eventsArray[i].id).click(function() {
-                $('#InfoModal').modal('show')
-                //console.log("info" + eventsArray[i].id)
-                $('.modal-body').text(activityArray[i].description);
-
-            });
-        }*/
-
         setListeners()
     }
   </script>
