@@ -7,11 +7,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using web.Data;
 using web.Models;
+using web.Filters;
 
 namespace web.Controllers_API
 {
     [Route("api/v1/activity")]
     [ApiController]
+    [ApiKeyAuth]
     public class ActivityApiController : ControllerBase
     {
         private readonly sloveniatrips _context;
