@@ -249,7 +249,7 @@ var apiUrl = "";
                 $('#profileEditModal').modal('toggle')
             });
             $('#closeProfileModal').click(function(){
-                console.log("Hello")
+                //console.log("Hello")
                 $('#profileEditModal').modal('hide')
             });
 
@@ -297,7 +297,7 @@ var apiUrl = "";
         document.getElementById("EventsTitle").innerHTML+=" "+profileObject.userName
         displayPersonalInfo();
         fillEditModal();
-        console.log(profileObject)
+        //console.log(profileObject)
         // GET ALL EVENTS IN USER REGION
 
         let eventsArray = []
@@ -393,14 +393,9 @@ var apiUrl = "";
                 izpis = ""
             }
             document.getElementById('event-listcontent').appendChild(listItem);
-            console.log("Hello")
+            //console.log("Hello")
         }
-        @* for (let i = 0; i < eventsArray.length; i++) {
-            $("#info" + eventsArray[i].id).click(function() {
-                $('#InfoModal').modal('show')
-                console.log("info" + eventsArray[i].id)
-            });
-        } *@
+        
 
 
         let eventhasactivityArray=[]
@@ -428,23 +423,40 @@ var apiUrl = "";
                 activityArray=activity
             });
 
-
+        let activityID
+        let eventID
+        let naslov
         for (let i = 0; i < eventhasactivityArray.length; i++) {
             
-            for (let [key, attrib] of Object.entries(eventhasactivityArray[i])) {
-                console.log(key,attrib)
+            
+            await fetch("@apiUrl"+"activity/"+eventhasactivityArray[i].activityID,{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
             }
+        })
+            .then(response => response.json())
+            .then(activity =>{
+                $("#info" + eventhasactivityArray[i].eventID).click(function() {
+                $('#InfoModal').modal('show')
+
+                for(let j=0; j< eventsArray.length; j++)
+            {
+                if(eventsArray[j].id == eventhasactivityArray[i].eventID)
+                    {
+                         naslov = eventsArray[j].name
+                    }
+            }
+
+                $('.modal-body').text(activity.description);
+                $('.modal-title').text(naslov);
+                console.log(activity)
+            });
+            });
         }
         
         
-        /*for (let i = 0; i < eventsArray.length; i++) {
-            $("#info" + eventsArray[i].id).click(function() {
-                $('#InfoModal').modal('show')
-                //console.log("info" + eventsArray[i].id)
-                $('.modal-body').text(activityArray[i].description);
-
-            });
-        }*/
+        
 
         setListeners()
     }
