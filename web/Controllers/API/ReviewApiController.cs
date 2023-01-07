@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using web.Data;
 using web.Models;
-
+using web.Filters;
 namespace web.Controllers_API
 {
     [Route("api/v1/review")]
     [ApiController]
+    [ApiKeyAuth]
     public class ReviewApiController : ControllerBase
     {
         private readonly sloveniatrips _context;
@@ -23,6 +24,7 @@ namespace web.Controllers_API
 
         // GET: api/ReviewApi
         [HttpGet]
+        [ApiKeyAuth]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
         {
           if (_context.Reviews == null)

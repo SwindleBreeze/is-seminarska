@@ -11,11 +11,13 @@ public class HomeController : Controller
 {
     private readonly SignInManager<ApplicationUser> _signInManager;
     private readonly ILogger<HomeController> _logger;
+    private readonly UserManager<ApplicationUser> _userManager;
 
-    public HomeController(SignInManager<ApplicationUser> signInManager, ILogger<HomeController> logger)
+    public HomeController(SignInManager<ApplicationUser> signInManager, ILogger<HomeController> logger, UserManager<ApplicationUser> userManager)
     {
         _signInManager = signInManager;
         _logger = logger;
+        _userManager = userManager;
     }
 
     public IActionResult SignOutIfCookieIsEmpty()
@@ -39,7 +41,20 @@ public class HomeController : Controller
         // Return an empty result
         return new EmptyResult();
     }
+    public async Task<IActionResult> RefreshLoginPartial()
+    {
 
+        // Get the current user
+        var user = await _userManager.GetUserAsync(User);
+
+        // Sign the user out
+        await _signInManager.SignOutAsync();
+
+        await _signInManager.SignInAsync(user, isPersistent: false);
+
+        // Return the updated login partial view
+        return PartialView("_LoginPartial");
+    }
     public IActionResult Index()
     {
         return View();

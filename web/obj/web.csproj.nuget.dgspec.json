@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\dino8\\OneDrive\\Namizje\\Sola\\2_letnik\\IS_Seminarska\\is-seminarska\\web\\web.csproj": {}
+    "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\web.csproj": {}
   },
   "projects": {
-    "C:\\Users\\dino8\\OneDrive\\Namizje\\Sola\\2_letnik\\IS_Seminarska\\is-seminarska\\web\\web.csproj": {
+    "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\web.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\dino8\\OneDrive\\Namizje\\Sola\\2_letnik\\IS_Seminarska\\is-seminarska\\web\\web.csproj",
+        "projectUniqueName": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\web.csproj",
         "projectName": "web",
-        "projectPath": "C:\\Users\\dino8\\OneDrive\\Namizje\\Sola\\2_letnik\\IS_Seminarska\\is-seminarska\\web\\web.csproj",
-        "packagesPath": "C:\\Users\\dino8\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\dino8\\OneDrive\\Namizje\\Sola\\2_letnik\\IS_Seminarska\\is-seminarska\\web\\obj\\",
+        "projectPath": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\web.csproj",
+        "packagesPath": "C:\\Users\\edine\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\dino8\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\edine\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
@@ -90,7 +90,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.404\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.402\\RuntimeIdentifierGraph.json"
         }
       }
     }
