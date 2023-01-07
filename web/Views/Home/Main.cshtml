@@ -138,7 +138,12 @@ var apiUrl = "";
     async function displayPersonalInfo()
     {
 
-        await fetch("@apiUrl"+"region/"+profileObject.regionID)
+        await fetch("@apiUrl"+"region/"+profileObject.regionID, {
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
             .then(response => response.json())
             .then(region =>{
             document.getElementById("list-region").innerHTML+=region.name
@@ -204,7 +209,7 @@ var apiUrl = "";
         
         let response = await fetch("@apiUrl"+`profile/userupdate/${profileObject.id}`, {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
+            headers: { 'Content-Type': 'application/json', 'ApiKey':'secret' },
             body: newData
         });
 
@@ -247,7 +252,12 @@ var apiUrl = "";
     async function main()
     {
         //GET PROFILE BY ID
-        await fetch("@apiUrl"+"profile/"+userId)
+        await fetch("@apiUrl"+"profile/"+userId, {
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
             .then(response => response.json())
             .then(profile =>{
                 console.log(profile)
@@ -261,19 +271,34 @@ var apiUrl = "";
         console.log(profileObject)
         // GET ALL EVENTS IN USER REGION
         let eventsArray = []
-        await fetch("@apiUrl"+"event/region/"+profileObject.regionID)
-            .then(response => response.json())
-            .then(events => {
-            console.log("Got events")
-            eventsArray = events
-            });
+        await fetch("@apiUrl"+"event/region/"+profileObject.regionID,{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
+        .then(response => response.json())
+        .then(events => {
+        console.log("Got events")
+        eventsArray = events
+        });
         
-        await fetch("@apiUrl"+"eventhasactivity")
+        await fetch("@apiUrl"+"eventhasactivity",{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
             .then(response => response.json())
             .then(eventhasactivity =>{
             console.log(eventhasactivity)
             });
-        await fetch("@apiUrl"+"activity")
+        await fetch("@apiUrl"+"activity",{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
             .then(response => response.json())
             .then(activity =>{
             console.log(activity)
