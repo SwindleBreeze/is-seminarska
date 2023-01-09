@@ -68,3 +68,26 @@
   float: right;
   width: 45%;
 }
+
+#plannedevent-list {
+  float: left;
+  width: 45%;
+  margin-top: 15px;
+}
+
+#visitedevent-list {
+  margin-top: 15px;
+}
+
+#event-listcontent{
+  height: 247px;
+  overflow-y: auto;
+}
+
+.list-group-item{
+  background-color: rgba(248, 248, 248, 0.8)
+}
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; 
+}

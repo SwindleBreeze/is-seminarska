@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using web.Data;
 
@@ -11,9 +12,10 @@ using web.Data;
 namespace web.Migrations
 {
     [DbContext(typeof(sloveniatrips))]
-    partial class sloveniatripsModelSnapshot : ModelSnapshot
+    [Migration("20230108135942_TESTNEW")]
+    partial class TESTNEW
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -336,21 +338,20 @@ namespace web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("EventID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProfileID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("ProfileID")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ProfileId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("EventID");
+
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Profile_Has_Events", (string)null);
                 });
@@ -380,15 +381,12 @@ namespace web.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<string>("ApplicationUserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<int>("EventID")
                         .HasColumnType("int");
 
-                    b.Property<string>("ProfileID")
+                    b.Property<string>("ProfileId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("comment")
                         .IsRequired()
@@ -399,9 +397,9 @@ namespace web.Migrations
 
                     b.HasKey("ID");
 
-                    b.HasIndex("ApplicationUserId");
-
                     b.HasIndex("EventID");
+
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Review", (string)null);
                 });
@@ -498,28 +496,38 @@ namespace web.Migrations
 
             modelBuilder.Entity("web.Models.Profile_Has_Events", b =>
                 {
-                    b.HasOne("web.Models.ApplicationUser", null)
-                        .WithMany("Profile_Has_Events")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("web.Models.Event", null)
+                    b.HasOne("web.Models.Event", "Event")
                         .WithMany("Profile_Has_Events")
                         .HasForeignKey("EventID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("web.Models.ApplicationUser", "Profile")
+                        .WithMany("Profile_Has_Events")
+                        .HasForeignKey("ProfileId");
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Profile");
                 });
 
             modelBuilder.Entity("web.Models.Review", b =>
                 {
-                    b.HasOne("web.Models.ApplicationUser", null)
-                        .WithMany("Reviews")
-                        .HasForeignKey("ApplicationUserId");
-
-                    b.HasOne("web.Models.Event", null)
+                    b.HasOne("web.Models.Event", "Event")
                         .WithMany("Reviews")
                         .HasForeignKey("EventID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("web.Models.ApplicationUser", "Profile")
+                        .WithMany("Reviews")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Profile");
                 });
 
             modelBuilder.Entity("web.Models.Activity", b =>

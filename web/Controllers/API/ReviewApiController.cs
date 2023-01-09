@@ -118,6 +118,31 @@ namespace web.Controllers_API
             return NoContent();
         }
 
+        [HttpPost("upsert")]
+        public async Task<ActionResult<Review>> UpsertReview(string profileId, int eventId, string comment, int grade)
+        {
+            // Check if a review for the given event and profile already exists
+            var existingReview = await _context.Reviews.FirstOrDefaultAsync(
+                r => r.EventID == eventId && r.ProfileID == profileId
+            );
+
+            // If a review already exists, update it
+            if (existingReview != null)
+            {
+                existingReview.grade = grade;
+                existingReview.comment = comment;
+                _context.Entry(existingReview).State = EntityState.Modified;
+            }
+            // If a review doesn't already exist, insert a new one
+            else
+            {
+                _context.Reviews.Add(new Review { ProfileID = profileId, EventID = eventId, grade = grade, comment = comment });
+            }
+
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
+
         private bool ReviewExists(int id)
         {
             return (_context.Reviews?.Any(e => e.ID == id)).GetValueOrDefault();

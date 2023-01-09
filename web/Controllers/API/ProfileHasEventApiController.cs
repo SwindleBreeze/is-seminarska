@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using web.Data;
 using web.Models;
-
+using web.Filters;
 namespace web.Controllers_API
 {
     [Route("api/v1/profilehasevent")]
     [ApiController]
+    [ApiKeyAuth]
     public class ProfileHasEventApiController : ControllerBase
     {
         private readonly sloveniatrips _context;
@@ -94,6 +95,40 @@ namespace web.Controllers_API
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetProfile_Has_Events", new { id = profile_Has_Events.ID }, profile_Has_Events);
+        }
+        //new post 
+        [HttpPost("create/{profileID}/{eventID}")]
+        public async Task<ActionResult<Profile_Has_Events>> CreateProfileHasEvent(string profileID, int eventID)
+        {
+            // Look up the profile and event entities in the database
+            var profile = await _context.Profiles.FindAsync(profileID);
+            var evt = await _context.Events.FindAsync(eventID);
+            if (profile == null || evt == null)
+            {
+                return NotFound();
+            }
+
+            // Check if the relationship already exists
+            var existingRelationship = _context.Profile_Has_Events
+                .Where(r => r.ProfileID == profileID && r.EventID == eventID)
+                .SingleOrDefault();
+
+            if (existingRelationship == null)
+            {
+                // Create a new Profile_Has_Events object and set its properties
+                var profileHasEvent = new Profile_Has_Events();
+                profileHasEvent.ProfileID = profile.Id;
+                profileHasEvent.EventID = evt.ID;
+
+                // Add the new object to the database and save the changes
+                _context.Profile_Has_Events.Add(profileHasEvent);
+                await _context.SaveChangesAsync();
+                return CreatedAtAction(nameof(GetProfile_Has_Events), new { id = profileHasEvent.ID }, profileHasEvent);
+            }
+            else
+            {
+                return Ok(existingRelationship);
+            }
         }
 
         // DELETE: api/ProfileHasEventApi/5

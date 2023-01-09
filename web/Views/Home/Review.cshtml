@@ -1,0 +1,385 @@
+@using Microsoft.AspNetCore.Hosting;
+@inject IWebHostEnvironment hostingEnvironment;
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor httpContextAccessor;
+
+@{
+ViewData["Title"] = "Home Page";
+var apiUrl = "";
+@* var userId = httpContextAccessor.HttpContext.Request.Cookies["userId"]; *@
+}
+
+@{
+  if (hostingEnvironment.IsDevelopment())
+  {
+    apiUrl = "https://localhost:7092/api/v1/";
+  }
+  else
+  {
+    apiUrl = "/api/v1/";
+  }
+}
+<html>
+    <head>
+    <link href="/css/styles.css" rel="stylesheet" />
+    <script src="https://kit.fontawesome.com/99aa5f36e5.js" crossorigin="anonymous"></script>
+    </head>
+    <body style="background-color: aliceblue;">
+        <div class="text-center">
+        <h1 class="display-4" id="EventsTitle">Welcome to the review page</h1>
+        </div>
+        <hr>
+        <div id="mainContainer">
+            <div id="visitedevent-list" style="border: 1px solid black;">
+                <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0; text-align:center;">
+                    Events you may have visited before
+                </legend>
+                <div id="visitedevent-list-content" >
+                    <ul class="list-group" id="visitedevent-listcontent">  
+                        @* <li class="list-group-item">Cras justo odio</li> *@
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="reviewModal" tabindex="-1" role="dialog" aria-labelledby="reviewLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="reviewLabel">Edit Profile</h5>
+                            <button type="button" class="btn-close" id="closeReviewModal" aria-label="Close"></button>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <a hidden id="eventId"></a>
+                        <a style="font-weight: 500;">Review: </a><input type="textarea" cols="60" rows="5" maxLength = "500" placeholder="Review" id="editReview"> </input> <br><hr>
+                        <a style="font-weight: 500;">Grade: </a>
+                        <select id="editStars" style="width: 47px; text-align: center" >
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select><br>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" id="saveEdits">Save review</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="InfoModal" tabindex="-1" role="dialog" aria-labelledby="InfoLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="InfoLabel">Modal title</h5>
+                            <button type="button" class="btn-close" id="closeInfoModal" aria-label="Close"></button>
+                        </button>
+                    </div>
+                    <div class="modal-body" id="infoBody">
+                        ...
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</html>
+
+
+
+@section scripts
+{
+  <script>
+    function getCookie(cookieName)
+    {
+      let cookie = {};
+      document.cookie.split(';').forEach(function(el) {
+        let [key,value] = el.split('=');
+        cookie[key.trim()] = value;
+      })
+      return cookie[cookieName];
+    }
+
+    //CHECK IF LOGGED IN
+    let userId = (getCookie("loginData"))
+    if(userId != null && userId.length != 0)
+    {
+      main();
+    }
+    else
+    {
+        window.location.replace('/Home/Index');
+    }
+    let profileObject;
+
+    async function removeEventFromProfile(profileId, EventId)
+    {
+        let response = await fetch("@apiUrl"+`profilehasevent/create/${profileId}/${EventId}`, {
+            
+            method: 'POST',
+            headers: {'ApiKey':'secret' }
+        });
+        console.log(response)
+        if (response.ok) {
+            // If the status code is OK, then the update was successful
+            console.log("GOOD")
+            $("#info"+EventId).parent().remove()
+            window.location.reload()
+        } else {
+            // If the status code is not OK, then the update was not successful
+            console.log("BAD")
+        }
+    }
+
+    async function postReview(eventID)
+    {
+        console.log(eventID)
+        console.log(typeof eventID);
+        let newjson = JSON.stringify({
+            profileId: getCookie("loginData"),
+            eventId: parseInt(eventID),
+            grade: $("#editStars").val(),
+            comment: $("#editReview").val()
+        })
+        console.log(newjson)
+        fetch("@apiUrl"+'review/upsert', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'ApiKey': 'secret'
+        },            
+        body: newjson
+        })
+        .then(response => response.json())
+        .then(review => console.log(review))
+        .catch(error => console.error(error))
+    }
+
+    // async function fillReviews()
+
+
+    function setListeners()
+    {
+        $(document).ready(function(){
+            $('#reviewModalButton').click(function(){
+                $('#reviewModal').modal('toggle')
+            });
+
+            $('#closeReviewModal').click(function(){
+                $('#reviewModal').modal('hide')
+            });
+
+            $('#InfoButton').click(function(){
+                $('#InfoModal').modal('toggle')
+            });
+
+            $("#closeInfoModal").click(function(){
+                $('#InfoModal').modal('hide')
+            });
+            $("#saveEdits").click(function()
+            {
+               postReview($("#eventId").text()) 
+               $('#reviewModal').modal('hide')
+            })
+        });
+    }
+
+    async function displayPast(){
+        let eventsArray = []
+        await fetch("@apiUrl"+"event/profile/past/"+getCookie("loginData"),{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
+        .then(response => response.json())
+        .then(events => {
+            console.log("Got events")
+            eventsArray = events
+        });
+
+        let izpis = ""
+        for (let i = 0; i < eventsArray.length; i++) {
+            // console.log(eventsArray[i])
+            let listItem = document.createElement('li');
+
+            //var button = document.createElement("button")
+
+            listItem.classList.add("list-group-item");
+
+            let id
+
+            for (let [key, attrib] of Object.entries(eventsArray[i])) {
+
+                //console.log(key, attrib)
+
+                if (key == "id") {
+                    id = attrib
+                } else if (key == "name") {
+                    izpis = attrib + ","
+                    listItem.appendChild(document.createTextNode(izpis));
+                    listItem.innerHTML += "<br>";
+                } else if (key == "date") {
+                    let parts = attrib.split("T")
+                    let day = parts[0].split('-')[2]
+                    let month = parts[0].split('-')[1]
+                    let year = parts[0].split('-')[0]
+                    let finaldate = day + "." + month + "." + year
+                    izpis = finaldate + ","
+
+                    listItem.appendChild(document.createTextNode(izpis));
+
+                    listItem.innerHTML += "<br>";
+
+                } else if (key == "location") {
+                    izpis = attrib
+
+                    listItem.appendChild(document.createTextNode(izpis));
+                    listItem.innerHTML += "<br>";
+
+                    var info = document.createElement("i")
+                    var linkInfo = document.createElement("a")
+
+                    info.style.styleFloat = 'left';
+                    info.style.cssFloat = 'left';
+                    info.setAttribute("id", "info" + id)
+
+                    info.classList.add("fa-solid");
+                    info.classList.add("fa-file-lines");
+
+
+                    var review = document.createElement("i")
+
+                    review.style.styleFloat = 'right';
+                    review.style.cssFloat = 'right';
+                    review.style.fontSize = "20px";
+                    review.setAttribute("id", "review" + id)
+
+                    review.classList.add("fa-solid");
+                    review.classList.add("fa-comment");
+
+
+                    info.appendChild(linkInfo)
+
+                    listItem.appendChild(info)
+
+                    listItem.appendChild(review)
+
+
+                }
+                izpis = ""
+            }
+            document.getElementById('visitedevent-listcontent').appendChild(listItem);
+        }
+        if(eventsArray.length == 0)
+        {
+            let listItem = document.createElement('li');
+
+            //var button = document.createElement("button")
+
+            listItem.classList.add("list-group-item");
+
+            let izpis = "Looks like you have not visited any Events."
+            listItem.appendChild(document.createTextNode(izpis));
+
+            document.getElementById('visitedevent-listcontent').appendChild(listItem);
+        }
+
+        let eventhasactivityArray=[]
+        
+        await fetch("@apiUrl"+"eventhasactivity",{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
+            .then(response => response.json())
+            .then(eventhasactivity =>{
+                eventhasactivityArray=eventhasactivity
+            });
+
+        let activityArray=[]
+        await fetch("@apiUrl"+"activity",{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
+            .then(response => response.json())
+            .then(activity =>{
+                activityArray=activity
+            });
+
+        let activityID
+        let eventID
+        let naslov
+        for (let i = 0; i < eventhasactivityArray.length; i++) {
+            
+            
+            await fetch("@apiUrl"+"activity/"+eventhasactivityArray[i].activityID,{
+            method: 'GET',
+            headers: {
+                'ApiKey': 'secret'
+                }
+            })
+            .then(response => response.json())
+            .then(activity =>{
+                $("#info" + eventhasactivityArray[i].eventID).click(function() {
+                $('#InfoModal').modal('show')
+
+                for(let j=0; j< eventsArray.length; j++)
+                {
+                    if(eventsArray[j].id == eventhasactivityArray[i].eventID)
+                    {
+                        naslov = eventsArray[j].name
+                    }
+                }
+                    $('#infoBody').text(activity.description);
+                    $('#InfoLabel').text(naslov);
+
+                });
+            });
+        }
+        console.log(eventsArray)
+        for(let i=0;i<eventsArray.length;i++ )
+        {   
+            console.log(eventsArray[i])
+            $("#review" + eventsArray[i].id).click(function() {
+                
+                let userId = (getCookie("loginData"))
+                $("#eventId").text(eventsArray[i].id)
+                $('#reviewModal').modal('show')
+            });
+        }
+
+    }
+
+    async function main()
+    {
+        //GET PROFILE BY ID
+        await fetch("@apiUrl"+"profile/"+userId, {
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
+            .then(response => response.json())
+            .then(profile =>{
+                profileObject = profile
+            });
+
+        // SET TITLE
+        document.getElementById("EventsTitle").innerHTML+=" "+profileObject.userName
+        displayPast();
+        setListeners()
+    }
+
+  </script>
+}

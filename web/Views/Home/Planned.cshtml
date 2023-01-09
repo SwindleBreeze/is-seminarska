@@ -26,7 +26,7 @@ var apiUrl = "";
     </head>
     <body style="background-color: aliceblue;">
         <div class="text-center">
-        <h1 class="display-4" id="EventsTitle">Welcome to the event planner</h1>
+        <h1 class="display-4" id="EventsTitle">Welcome to the event viewer</h1>
         </div>
         <hr>
         <div id="mainContainer">
@@ -59,6 +59,30 @@ var apiUrl = "";
                     </div>
                 </div>
             </div>
+
+            <div id="Bottom">
+                <div id="visitedevent-list" style="border: 1px solid black;">
+                    <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
+                        Previous events you may have visited
+                    </legend>
+                    <div id="visitedevent-list-content" >
+                        <ul class="list-group" id="visitedevent-listcontent">  
+                            @* <li class="list-group-item">Cras justo odio</li> *@
+                        </ul>
+                    </div>
+                </div>
+                <div id="plannedevent-list" style="border: 1px solid black;">
+                    <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
+                        Events you plan on visiting
+                    </legend>
+                    <div id="plannedevent-list-content" >
+                        <ul class="list-group" id="plannedevent-listcontent">  
+                            @* <li class="list-group-item">Cras justo odio</li> *@
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="modal fade" id="profileEditModal" tabindex="-1" role="dialog" aria-labelledby="profileEditLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -461,6 +485,128 @@ var apiUrl = "";
         }
     }
 
+    async function displayPast(){
+        let eventsArray = []
+        
+        await fetch("@apiUrl"+"event/region/"+profileObject.regionID+"/"+getCookie("loginData"),{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
+        .then(response => response.json())
+        .then(events => {
+            console.log("Got events")
+            eventsArray = events
+        });
+
+        let izpis = ""
+        for (let i = 0; i < eventsArray.length; i++) {
+            displayed++
+            // console.log(eventsArray[i])
+            let listItem = document.createElement('li');
+
+            //var button = document.createElement("button")
+
+            listItem.classList.add("list-group-item");
+
+            let id
+
+            for (let [key, attrib] of Object.entries(eventsArray[i])) {
+
+                //console.log(key, attrib)
+
+                if (key == "id") {
+                    id = attrib
+                } else if (key == "name") {
+                    izpis = attrib + ","
+                    listItem.appendChild(document.createTextNode(izpis));
+                    listItem.innerHTML += "<br>";
+                } else if (key == "date") {
+                    let parts = attrib.split("T")
+                    let day = parts[0].split('-')[2]
+                    let month = parts[0].split('-')[1]
+                    let year = parts[0].split('-')[0]
+                    let finaldate = day + "." + month + "." + year
+                    izpis = finaldate + ","
+
+                    listItem.appendChild(document.createTextNode(izpis));
+
+                    listItem.innerHTML += "<br>";
+
+                } else if (key == "location") {
+                    izpis = attrib
+
+                    listItem.appendChild(document.createTextNode(izpis));
+                    listItem.innerHTML += "<br>";
+
+                    var info = document.createElement("i")
+                    var linkInfo = document.createElement("a")
+
+                    info.style.styleFloat = 'left';
+                    info.style.cssFloat = 'left';
+                    info.setAttribute("id", "info" + id)
+
+                    info.classList.add("fa-solid");
+                    info.classList.add("fa-file-lines");
+
+
+                    var review = document.createElement("i")
+
+                    review.style.styleFloat = 'right';
+                    review.style.cssFloat = 'right';
+                    review.style.fontSize = "20px";
+                    review.setAttribute("id", "review" + id)
+
+                    review.classList.add("fa-solid");
+                    review.classList.add("fa-comment");
+
+
+                    info.appendChild(linkInfo)
+
+                    listItem.appendChild(info)
+
+                    listItem.appendChild(review)
+
+
+                }
+                izpis = ""
+            }
+            document.getElementById('visitedevent-listcontent').appendChild(listItem);
+        }
+        if(eventsArray.length == 0)
+        {
+            let listItem = document.createElement('li');
+
+            //var button = document.createElement("button")
+
+            listItem.classList.add("list-group-item");
+
+            let izpis = "Looks like you have not visited any Events."
+            listItem.appendChild(document.createTextNode(izpis));
+
+            document.getElementById('visitedevent-listcontent').appendChild(listItem);
+        }
+
+    }
+
+    async function displayPlanned(){
+        let eventsArray = []
+        
+        await fetch("@apiUrl"+"event/region/"+profileObject.regionID+"/"+getCookie("loginData"),{
+            method: 'GET',
+            headers: {
+            'ApiKey': 'secret'
+            }
+        })
+        .then(response => response.json())
+        .then(events => {
+            console.log("Got events")
+            eventsArray = events
+        });
+
+
+    }
     let displayed=0
 
     async function main()
@@ -482,6 +628,7 @@ var apiUrl = "";
         displayPersonalInfo();
         fillEditModal();
         displayUpcoming();
+        displayPast();
         setListeners()
     }
 

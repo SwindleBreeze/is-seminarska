@@ -65,6 +65,16 @@ public class HomeController : Controller
         return View();
     }
 
+    public IActionResult Review()
+    {
+        return View();
+    }
+
+    public IActionResult Planned()
+    {
+        return View();
+    }
+
     public IActionResult Privacy()
     {
         return View();

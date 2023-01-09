@@ -7,11 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using web.Data;
 using web.Models;
-
+using web.Filters;
 namespace web.Controllers_API
 {
     [Route("api/v1/event")]
     [ApiController]
+    [ApiKeyAuth]
     public class EventApiController : ControllerBase
     {
         private readonly sloveniatrips _context;
@@ -122,19 +123,90 @@ namespace web.Controllers_API
         }
 
         [HttpGet]
-        [Route("region/{regionId}")]
-        public async Task<ActionResult<IEnumerable<Event>>> GetEventsByRegion(int regionId)
+        [Route("region/{regionId}/{profileId}")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetEventsByRegion(int regionId, string profileId)
         {
             if (_context.Events == null)
             {
                 return NotFound();
             }
+
+            // Find the events in the specified region
             var events = await _context.Events.Where(e => e.regionID == regionId).ToListAsync();
             if (events == null)
             {
                 return NotFound();
             }
+
+            // Find the profile_has_events records for the given profile
+            var profileHasEvents = await _context.Profile_Has_Events.Where(phe => phe.ProfileID == profileId).ToListAsync();
+
+            // Remove the events that the profile has already signed up for from the list
+            events = events.Where(e => !profileHasEvents.Any(phe => phe.EventID == e.ID)).ToList();
+
             return events;
+        }
+        
+        [HttpGet]
+        [Route("profile/past/{profileId}")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetPastEventsByProfile(string profileId)
+        {
+            if (_context.Profile_Has_Events == null || _context.Events == null)
+            {
+                return NotFound();
+            }
+
+            // Find the events that the profile is registered for
+            var profileEvents = await _context.Profile_Has_Events.Where(p => p.ProfileID == profileId).ToListAsync();
+            if (profileEvents == null)
+            {
+                return NotFound();
+            }
+
+            // Find the event entities for the events that the profile is registered for
+            var events = new List<Event>();
+            foreach (var profileEvent in profileEvents)
+            {
+                var evt = await _context.Events.FindAsync(profileEvent.EventID);
+                if (evt != null)
+                {
+                    events.Add(evt);
+                }
+            }
+
+            // Return only the events that have already happened (current date is after the event date)
+            return events.Where(e => e.Date < DateTime.Now).ToList();
+        }
+
+        [HttpGet]
+        [Route("profile/upcoming/{profileId}")]
+        public async Task<ActionResult<IEnumerable<Event>>> GetUpcomingEventsByProfile(string profileId)
+        {
+            if (_context.Profile_Has_Events == null || _context.Events == null)
+            {
+                return NotFound();
+            }
+
+            // Find the events that the profile is registered for
+            var profileEvents = await _context.Profile_Has_Events.Where(p => p.ProfileID == profileId).ToListAsync();
+            if (profileEvents == null)
+            {
+                return NotFound();
+            }
+
+            // Find the event entities for the events that the profile is registered for
+            var events = new List<Event>();
+            foreach (var profileEvent in profileEvents)
+            {
+                var evt = await _context.Events.FindAsync(profileEvent.EventID);
+                if (evt != null)
+                {
+                    events.Add(evt);
+                }
+            }
+
+            // Return only the events that have not happened yet (current date is before the event date)
+            return events.Where(e => e.Date >= DateTime.Now).ToList();
         }
     }
 }
