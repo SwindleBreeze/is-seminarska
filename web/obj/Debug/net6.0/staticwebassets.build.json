@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "B80XJQKa1pq1wVGGpBEtbPgRP6T4zsxMUvg4R92McdE=",
+  "Hash": "pXvBNM0VXuguhbCdM8J0rfz6PJsiB3A8gwybrG1yuQA=",
   "Source": "web",
   "BasePath": "_content/web",
   "Mode": "Default",
@@ -1190,23 +1190,6 @@
       "OriginalItemSpec": "wwwroot\\js\\site.js"
     },
     {
-      "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\js\\sw.js",
-      "SourceId": "web",
-      "SourceType": "Discovered",
-      "ContentRoot": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\",
-      "BasePath": "_content/web",
-      "RelativePath": "js/sw.js",
-      "AssetKind": "All",
-      "AssetMode": "All",
-      "AssetRole": "Primary",
-      "RelatedAsset": "",
-      "AssetTraitName": "",
-      "AssetTraitValue": "",
-      "CopyToOutputDirectory": "Never",
-      "CopyToPublishDirectory": "PreserveNewest",
-      "OriginalItemSpec": "wwwroot\\js\\sw.js"
-    },
-    {
       "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
       "SourceId": "web",
       "SourceType": "Discovered",
@@ -2191,6 +2174,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\manifest.json"
+    },
+    {
+      "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\sw.js",
+      "SourceId": "web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\",
+      "BasePath": "_content/web",
+      "RelativePath": "sw.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\sw.js"
     }
   ]
 }
