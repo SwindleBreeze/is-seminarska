@@ -14,7 +14,7 @@ Slike aplikcacije:
 
 ![image](https://user-images.githubusercontent.com/13045328/211564620-8c8a4d1c-4aa3-4fd8-9942-b6e71582de51.png)
 
--Event planner:
+- Event planner:
 
 ![image](https://user-images.githubusercontent.com/13045328/211564720-a1a82e57-069b-4146-90b6-10c1c224c4a5.png)
 
@@ -22,11 +22,11 @@ Slike aplikcacije:
 
 ![image](https://user-images.githubusercontent.com/13045328/211565292-c5bda19d-c6cb-4c87-85b8-cb08a7544e1d.png)
 
--Mobile Review page:
+- Mobile Review page:
 
 ![image](https://user-images.githubusercontent.com/13045328/211565240-455e22a4-5031-41ed-a928-4de5c7a50898.png)
 
--Mobile Event planner:
+- Mobile Event planner:
 
 ![image](https://user-images.githubusercontent.com/13045328/211565191-0f34ef37-dcb8-4145-aea4-12f1c274760a.png)
 
