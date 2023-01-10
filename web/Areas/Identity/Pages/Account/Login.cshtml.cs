@@ -118,7 +118,7 @@ namespace web.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     var userId = await _userManager.GetUserIdAsync(user);
-                    Response.Cookies.Append("loginData", userId, new CookieOptions { Expires = DateTime.Now.AddDays(1) });
+                    Response.Cookies.Append("loginData", userId, new CookieOptions { Expires = DateTime.Now.AddDays(1), IsEssential = true });
                     _logger.LogInformation("User logged in.");
                     await _signInManager.SignInAsync(user, isPersistent: Input.RememberMe);
 
