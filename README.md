@@ -38,4 +38,7 @@ prikazovati v event planner ampak se prikažejo na Review strani, kjer lahko dod
 
 Eden od naju se je bolj osredotočil na vzpostavljanje API-ja in PWA in bolj backend stvari medtem ko se je drugi bolj osredotočal na frontend predstavitve
 
+ER DIAGRAM DB
+
+![image](https://user-images.githubusercontent.com/13045328/211576434-e711a474-0d43-43ae-bd3b-0ae0b46e22c8.png)
 
