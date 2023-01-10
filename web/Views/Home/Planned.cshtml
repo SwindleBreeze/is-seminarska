@@ -30,56 +30,14 @@ var apiUrl = "";
         </div>
         <hr>
         <div id="mainContainer">
-            <div id="Top">
-                <div id="Profile" style="border: 1px solid black;">
-                    <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
-                        <a>Personal Information</a>
-                        <i class="fa-solid fa-user-pen" id="profileEditButton" style="font-size: 15px; float: right; margin-top: 13px;"></i>
-                    </legend>
-                    <div id="Profile-content">
-                        <ul class="list-group" id="Profile-listcontent">
-                            <li class="list-group-item" id='list-fullname'><a style="font-weight: 500;">Name: </a></li>
-                            <li class="list-group-item" id='list-dob'><a style="font-weight: 500;">Date of birth: </a></li>
-                            <li class="list-group-item" id='list-username'><a style="font-weight: 500;">Username: </a></li>
-                            <li class="list-group-item" id='list-email'><a style="font-weight: 500;">E-mail: </a></li>
-                            <li class="list-group-item" id='list-region'><a style="font-weight: 500;">Region: </a></li>
-                            <li class="list-group-item" id='list-phonenum'><a style="font-weight: 500;">Phone Number: </a></li>
-                        </ul>
-                    </div>
-                </div>
-            
-                <div id="event-list" style="border: 1px solid black;">
-                    <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
-                        Upcoming Events
-                    </legend>
-                    <div id="event-list-content" >
-                        <ul class="list-group" id="event-listcontent">  
-                            @* <li class="list-group-item">Cras justo odio</li> *@
-                        </ul>
-                    </div>
-                </div>
-            </div>
-
-            <div id="Bottom">
-                <div id="visitedevent-list" style="border: 1px solid black;">
-                    <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
-                        Previous events you may have visited
-                    </legend>
-                    <div id="visitedevent-list-content" >
-                        <ul class="list-group" id="visitedevent-listcontent">  
-                            @* <li class="list-group-item">Cras justo odio</li> *@
-                        </ul>
-                    </div>
-                </div>
-                <div id="plannedevent-list" style="border: 1px solid black;">
-                    <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
-                        Events you plan on visiting
-                    </legend>
-                    <div id="plannedevent-list-content" >
-                        <ul class="list-group" id="plannedevent-listcontent">  
-                            @* <li class="list-group-item">Cras justo odio</li> *@
-                        </ul>
-                    </div>
+            <div id="plannedevent-list" style="border: 1px solid black;">
+                <legend style="background-color: rgba(150,150,150,0.5); border-radius: 1px; padding:5px; margin-bottom:0">
+                    Events you plan on visiting
+                </legend>
+                <div id="plannedevent-list-content" >
+                    <ul class="list-group" id="plannedevent-listcontent">  
+                        @* <li class="list-group-item">Cras justo odio</li> *@
+                    </ul>
                 </div>
             </div>
         </div>
@@ -170,56 +128,11 @@ var apiUrl = "";
     }
     let profileObject;
 
-    async function displayPersonalInfo()
-    {
 
-        await fetch("@apiUrl"+"region/"+profileObject.regionID, {
-            method: 'GET',
-            headers: {
-            'ApiKey': 'secret'
-            }
-        })
-            .then(response => response.json())
-            .then(region =>{
-            document.getElementById("list-region").innerHTML+=region.name
-            });
-        for(let [key, attrib] of Object.entries(profileObject))
-        {
-            if(key == "firstName")
-            {
-                document.getElementById("list-fullname").innerHTML+=attrib
-            }
-            if(key == "lastName")
-            {
-                document.getElementById("list-fullname").innerHTML+=" "+attrib
-            }
-            if(key == "doB")
-            {
-                let parts = attrib.split("T")
-                let day = parts[0].split('-')[2]
-                let month = parts[0].split('-')[1]
-                let year = parts[0].split('-')[0]
-                let finaldate = day+"."+month+"."+year
-                document.getElementById("list-dob").innerHTML+=" "+finaldate
-            }
-            if(key == "userName")
-            {
-                document.getElementById("list-username").innerHTML+=" "+attrib
-            }
-            if(key == "email")
-            {
-                document.getElementById("list-email").innerHTML+=" "+attrib
-            }
-            if(key == "phoneNumber")
-            {
-                document.getElementById("list-phonenum").innerHTML+=" "+attrib
-            }
-        }
-    }
-
-    async function addEventToProfile(profileId, EventId)
+    async function removeEventFromProfile(profileId, EventId)
     {
         let response = await fetch("@apiUrl"+`profilehasevent/create/${profileId}/${EventId}`, {
+            
             method: 'POST',
             headers: {'ApiKey':'secret' }
         });
@@ -232,54 +145,6 @@ var apiUrl = "";
         } else {
             // If the status code is not OK, then the update was not successful
             console.log("BAD")
-        }
-    }
-
-    function fillEditModal()
-    {
-        $("#editname").val(profileObject.firstName+" "+profileObject.lastName)
-        $("#editemail").val(profileObject.email)
-        console.log(profileObject.regionID)
-        $("#editregionId").val(profileObject.regionID).change()
-        $("#editusername").val(profileObject.userName)
-        $("#editdob").val(profileObject.doB.split("T")[0])
-        $("#editphonenum").val(profileObject.phoneNumber)
-    }
-
-    async function updateProfile()
-    {
-        let jObject = {
-            "name": $("#editname").val(),
-            "email": $("#editemail").val(),
-            "username": $("#editusername").val(),
-            "phoneNumber": $("#editphonenum").val(),
-            "regionID": $("#editregionId").val(),
-            "dob": $("#editdob").val()+"T20:00:00.000Z"
-        }
-
-        let newData = JSON.stringify(jObject)
-        
-        let response = await fetch("@apiUrl"+`profile/userupdate/${profileObject.id}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json', 'ApiKey':'secret' },
-            body: newData
-        });
-
-        // Check the status code of the response
-        if (response.ok) {
-            // If the status code is OK, then the update was successful
-            alert('Profile update successful');
-            await $.ajax({
-                url: '/Home/RefreshLoginPartial',
-                type: 'GET',
-                success: function(result) {
-                    $('#loginPartialContainer').html(result);
-                }
-            });
-            window.location.reload();
-        } else {
-            // If the status code is not OK, then the update was not successful
-            alert('Error updating profile: ' + response.statusText+' Please Contact an Admin');
         }
     }
 
@@ -311,13 +176,13 @@ var apiUrl = "";
         });
     }
 
-    async function displayUpcoming()
+    async function displayPlanned()
     {
         // GET ALL EVENTS IN USER REGION THAT HE HASNT YET VISITED
 
         let eventsArray = []
         
-        await fetch("@apiUrl"+"event/region/"+profileObject.regionID+"/"+getCookie("loginData"),{
+        await fetch("@apiUrl"+"event/profile/upcoming/"+getCookie("loginData"),{
             method: 'GET',
             headers: {
             'ApiKey': 'secret'
@@ -329,11 +194,10 @@ var apiUrl = "";
             eventsArray = events
         });
 
-        // console.log(eventsArray)
+        console.log(eventsArray)
     
         let izpis = ""
         for (let i = 0; i < eventsArray.length; i++) {
-            displayed++
             // console.log(eventsArray[i])
             let listItem = document.createElement('li');
 
@@ -391,7 +255,7 @@ var apiUrl = "";
                     going.setAttribute("id", "going" + id)
 
                     going.classList.add("fa-solid");
-                    going.classList.add("fa-calendar-plus");
+                    going.classList.add("fa-calendar-minus");
 
 
                     info.appendChild(linkInfo)
@@ -405,7 +269,7 @@ var apiUrl = "";
                 }
                 izpis = ""
             }
-            document.getElementById('event-listcontent').appendChild(listItem);
+            document.getElementById('plannedevent-listcontent').appendChild(listItem);
         }
         if(eventsArray.length == 0)
         {
@@ -418,7 +282,7 @@ var apiUrl = "";
             let izpis = "Looks like there are no new events in your region. Try changing regions under personal information"
             listItem.appendChild(document.createTextNode(izpis));
 
-            document.getElementById('event-listcontent').appendChild(listItem);
+            document.getElementById('plannedevent-listcontent').appendChild(listItem);
         }
         
 
@@ -485,130 +349,6 @@ var apiUrl = "";
         }
     }
 
-    async function displayPast(){
-        let eventsArray = []
-        
-        await fetch("@apiUrl"+"event/region/"+profileObject.regionID+"/"+getCookie("loginData"),{
-            method: 'GET',
-            headers: {
-            'ApiKey': 'secret'
-            }
-        })
-        .then(response => response.json())
-        .then(events => {
-            console.log("Got events")
-            eventsArray = events
-        });
-
-        let izpis = ""
-        for (let i = 0; i < eventsArray.length; i++) {
-            displayed++
-            // console.log(eventsArray[i])
-            let listItem = document.createElement('li');
-
-            //var button = document.createElement("button")
-
-            listItem.classList.add("list-group-item");
-
-            let id
-
-            for (let [key, attrib] of Object.entries(eventsArray[i])) {
-
-                //console.log(key, attrib)
-
-                if (key == "id") {
-                    id = attrib
-                } else if (key == "name") {
-                    izpis = attrib + ","
-                    listItem.appendChild(document.createTextNode(izpis));
-                    listItem.innerHTML += "<br>";
-                } else if (key == "date") {
-                    let parts = attrib.split("T")
-                    let day = parts[0].split('-')[2]
-                    let month = parts[0].split('-')[1]
-                    let year = parts[0].split('-')[0]
-                    let finaldate = day + "." + month + "." + year
-                    izpis = finaldate + ","
-
-                    listItem.appendChild(document.createTextNode(izpis));
-
-                    listItem.innerHTML += "<br>";
-
-                } else if (key == "location") {
-                    izpis = attrib
-
-                    listItem.appendChild(document.createTextNode(izpis));
-                    listItem.innerHTML += "<br>";
-
-                    var info = document.createElement("i")
-                    var linkInfo = document.createElement("a")
-
-                    info.style.styleFloat = 'left';
-                    info.style.cssFloat = 'left';
-                    info.setAttribute("id", "info" + id)
-
-                    info.classList.add("fa-solid");
-                    info.classList.add("fa-file-lines");
-
-
-                    var review = document.createElement("i")
-
-                    review.style.styleFloat = 'right';
-                    review.style.cssFloat = 'right';
-                    review.style.fontSize = "20px";
-                    review.setAttribute("id", "review" + id)
-
-                    review.classList.add("fa-solid");
-                    review.classList.add("fa-comment");
-
-
-                    info.appendChild(linkInfo)
-
-                    listItem.appendChild(info)
-
-                    listItem.appendChild(review)
-
-
-                }
-                izpis = ""
-            }
-            document.getElementById('visitedevent-listcontent').appendChild(listItem);
-        }
-        if(eventsArray.length == 0)
-        {
-            let listItem = document.createElement('li');
-
-            //var button = document.createElement("button")
-
-            listItem.classList.add("list-group-item");
-
-            let izpis = "Looks like you have not visited any Events."
-            listItem.appendChild(document.createTextNode(izpis));
-
-            document.getElementById('visitedevent-listcontent').appendChild(listItem);
-        }
-
-    }
-
-    async function displayPlanned(){
-        let eventsArray = []
-        
-        await fetch("@apiUrl"+"event/region/"+profileObject.regionID+"/"+getCookie("loginData"),{
-            method: 'GET',
-            headers: {
-            'ApiKey': 'secret'
-            }
-        })
-        .then(response => response.json())
-        .then(events => {
-            console.log("Got events")
-            eventsArray = events
-        });
-
-
-    }
-    let displayed=0
-
     async function main()
     {
         //GET PROFILE BY ID
@@ -625,11 +365,8 @@ var apiUrl = "";
 
         // SET TITLE
         document.getElementById("EventsTitle").innerHTML+=" "+profileObject.userName
-        displayPersonalInfo();
-        fillEditModal();
-        displayUpcoming();
-        displayPast();
-        setListeners()
+        displayPlanned();
+        setListeners();
     }
 
   </script>

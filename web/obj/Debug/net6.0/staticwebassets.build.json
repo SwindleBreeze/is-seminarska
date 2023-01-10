@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "jQpiQA0RJ5kftW1nvuxAvKx5ZMfQyoBN1QAdqRxYAPA=",
+  "Hash": "B80XJQKa1pq1wVGGpBEtbPgRP6T4zsxMUvg4R92McdE=",
   "Source": "web",
   "BasePath": "_content/web",
   "Mode": "Default",
@@ -1139,6 +1139,40 @@
       "OriginalItemSpec": "wwwroot\\favicon.ico"
     },
     {
+      "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\icon.jpg",
+      "SourceId": "web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\",
+      "BasePath": "_content/web",
+      "RelativePath": "icon.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\icon.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\icon(1).jpg",
+      "SourceId": "web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\",
+      "BasePath": "_content/web",
+      "RelativePath": "icon(1).jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\icon(1).jpg"
+    },
+    {
       "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\js\\site.js",
       "SourceId": "web",
       "SourceType": "Discovered",
@@ -1154,6 +1188,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\site.js"
+    },
+    {
+      "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\js\\sw.js",
+      "SourceId": "web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\",
+      "BasePath": "_content/web",
+      "RelativePath": "js/sw.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\sw.js"
     },
     {
       "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\lib\\bootstrap\\dist\\css\\bootstrap-grid.css",
@@ -2123,6 +2174,23 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\lib\\jquery\\LICENSE.txt"
+    },
+    {
+      "Identity": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\manifest.json",
+      "SourceId": "web",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\edine\\OneDrive\\Documents\\Faks\\is-seminarska\\web\\wwwroot\\",
+      "BasePath": "_content/web",
+      "RelativePath": "manifest.json",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\manifest.json"
     }
   ]
 }

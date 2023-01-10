@@ -27,6 +27,7 @@ namespace web.Controllers_API
         [ApiKeyAuth]
         public async Task<ActionResult<IEnumerable<Review>>> GetReviews()
         {
+            Console.WriteLine("Hello");
           if (_context.Reviews == null)
           {
               return NotFound();
@@ -144,34 +145,39 @@ namespace web.Controllers_API
         // }
 
         [HttpPost("upsert")]
-        public async Task<ActionResult<Review>> UpsertReview(string comment, int grade, string profileId, int eventId)
+        public async Task<ActionResult<Review>> UpsertReview([FromBody] Review review)
         {
+            Console.WriteLine("Received review with profile ID: " + review.ApplicationUserId + ", event ID: " + review.EventID + ", grade: " + review.grade + ", and comment: " + review.comment);
             // Check if a review for the given event and profile already exists
             var existingReview = await _context.Reviews.FirstOrDefaultAsync(
-                r => r.EventID == eventId && r.ProfileID == profileId
+                r => r.EventID == review.EventID && r.ApplicationUserId == review.ApplicationUserId
             );
 
             // If a review already exists, update it
             if (existingReview != null)
             {
-                existingReview.grade = grade;
-                existingReview.comment = comment;
+                existingReview.grade = review.grade;
+                existingReview.comment = review.comment;
                 _context.Entry(existingReview).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return existingReview;
             }
 
             // If a review does not already exist, create a new one
-            var review = new Review
-            {
-                comment = comment,
-                grade = grade,
-                ProfileID = profileId,
-                EventID = eventId
-            };
             _context.Reviews.Add(review);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetReview", new { id = review.ID }, review);
+        }
+
+        [HttpGet("profile/{id}")]
+        public async Task<ActionResult<IEnumerable<Review>>> GetReviewsByProfile(string id)
+        {
+            var reviews = await _context.Reviews.Where(r => r.ApplicationUserId == id).ToListAsync();
+            if (reviews == null)
+            {
+                return NotFound();
+            }
+            return reviews;
         }
 
         private bool ReviewExists(int id)

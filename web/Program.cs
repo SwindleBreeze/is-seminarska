@@ -44,7 +44,7 @@ app.UseSwaggerUI(c=>
 });
 
 app.UseRouting();
-app.UseAuthentication();;
+app.UseAuthentication();
 
 app.UseAuthorization();
 

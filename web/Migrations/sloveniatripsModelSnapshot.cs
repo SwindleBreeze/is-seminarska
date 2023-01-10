@@ -381,14 +381,11 @@ namespace web.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<string>("ApplicationUserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("EventID")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProfileID")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("comment")
                         .IsRequired()
@@ -513,7 +510,9 @@ namespace web.Migrations
                 {
                     b.HasOne("web.Models.ApplicationUser", null)
                         .WithMany("Reviews")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("ApplicationUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("web.Models.Event", null)
                         .WithMany("Reviews")

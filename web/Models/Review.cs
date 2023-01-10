@@ -8,8 +8,7 @@ namespace web.Models
         public int ID { get; set; }
         public string comment { get; set; }
         public int grade { get; set; }
-        public string ProfileID { get; set; }
         public int EventID { get; set; }
-
+        public string ApplicationUserId { get; set; }
     }
 }

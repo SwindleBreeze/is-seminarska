@@ -27,7 +27,7 @@
 }
 
 .TextBlock1 {
-  width: 25vw;
+  width: 30vw;
   height: fit-content;
   max-height: 30vh;
   background-color: rgba(130, 130, 130, 0.8);
@@ -37,7 +37,7 @@
 }
 
 .TextBlock2 {
-  width: 25vw;
+  width: 30vw;
   height: fit-content;
   max-height: 30vh;
   background-color: rgba(130, 130, 130, 0.8);
@@ -71,7 +71,7 @@
 
 #plannedevent-list {
   float: left;
-  width: 45%;
+  width: 100%;
   margin-top: 15px;
 }
 
@@ -80,6 +80,11 @@
 }
 
 #event-listcontent{
+  height: 247px;
+  overflow-y: auto;
+}
+
+#plannedevent-listcontent{
   height: 247px;
   overflow-y: auto;
 }

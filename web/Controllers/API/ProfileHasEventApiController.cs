@@ -151,6 +151,26 @@ namespace web.Controllers_API
             return NoContent();
         }
 
+        // DELETE: api/ProfileHasEventApi/{profileId}/{eventId}
+        [HttpDelete("{profileId}/{eventId}")]
+        public async Task<ActionResult<Profile_Has_Events>> DeleteProfileHasEvent(string profileId, int eventId)
+        {
+            // Find the relationship entity to delete
+            var relationship = await _context.Profile_Has_Events
+                .Where(r => r.ProfileID == profileId && r.EventID == eventId)
+                .FirstOrDefaultAsync();
+            if (relationship == null)
+            {
+                return NotFound();
+            }
+
+            // Remove the entity from the database
+            _context.Profile_Has_Events.Remove(relationship);
+            await _context.SaveChangesAsync();
+
+            return relationship;
+        }
+
         private bool Profile_Has_EventsExists(int id)
         {
             return (_context.Profile_Has_Events?.Any(e => e.ID == id)).GetValueOrDefault();
